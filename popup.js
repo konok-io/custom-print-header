@@ -27,7 +27,6 @@ const DEFAULTS = {
   fontFamily: "Arial",
   contentOnly: false,
   pageOrientation: "portrait",
-  pageMargin: "default",
   fixRtl: false,
   removeFixed: false,
   printBackground: false,
@@ -299,7 +298,6 @@ function populateForm(s) {
   setChk("pageNumbers", s.pageNumbers);
   setChk("watermarkEnabled", s.watermark !== "none");
   setMode("orientation", s.pageOrientation || "portrait");
-  setMode("pageMargin", s.pageMargin || "default");
   setVal("companyName",  s.companyName);
   setVal("tagline",      s.tagline);
   setVal("address",      s.address);
@@ -367,7 +365,6 @@ function getSettings() {
     footerEnabled: chk("footerEnabled"),
     contentOnly:    chk("contentOnly"),
     pageOrientation: val("pageOrientation", "portrait"),
-    pageMargin: val("pageMargin", "default"),
     fixRtl:        chk("fixRtl"),
     removeFixed:   chk("removeFixed"),
     printBackground: chk("printBackground"),
