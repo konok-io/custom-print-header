@@ -315,15 +315,9 @@
           page-break-inside: avoid !important;
         }
 
-        /* মোবাইল হাইডেন সব দেখাবে */
-        .hidden-xs, .hidden-sm, .hidden-md, .hidden-lg, .hidden-print,
-        .d-none, .d-sm-none, .d-md-none, .d-lg-none,
-        [class*="d-none"], [class*="hidden-"],
-        .invisible, .collapse:not(.show) {
-          display: block !important;
-          visibility: visible !important;
-          width: 100% !important;
-          overflow: visible !important;
+        /* মোবাইল হাইডেন লুকাবে - শুধু মূল কন্টেন্ট */
+        .hidden-print {
+          display: none !important;
         }
 
         /* মোবাইল মেনু লুকাবে */
