@@ -281,7 +281,6 @@
         /* সব কন্টেইনার পূর্ণ প্রস্থ */
         *, *::before, *::after {
           box-sizing: border-box !important;
-          background: #ffffff !important;
         }
         
         .container, .container-fluid, .container-sm, .container-md, .container-lg, .container-xl,
@@ -292,7 +291,6 @@
           max-width: 100% !important;
           min-width: 100% !important;
           flex-basis: 100% !important;
-          background: #ffffff !important;
         }
 
         /* টেবিল পূর্ণ প্রস্থ */
