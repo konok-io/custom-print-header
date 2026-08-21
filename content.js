@@ -33,7 +33,7 @@
     fontFamily:     "StarNews",
     contentOnly:    false,
     pageOrientation: "portrait",
-    pageMargin:     "default",  // "default" = with margins, "none" = no margins
+    pageMargin:     "none",  // "default" = with margins, "none" = no margins
     fixRtl:        false,
     removeFixed:   false,
     printBackground: false,

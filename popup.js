@@ -27,7 +27,7 @@ const DEFAULTS = {
   fontFamily: "Arial",
   contentOnly: false,
   pageOrientation: "portrait",
-  pageMargin: "default",
+  pageMargin: "none",
   fixRtl: false,
   removeFixed: false,
   printBackground: false,
