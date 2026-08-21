@@ -30,6 +30,7 @@
     borderColor:    "#2563eb",
     fontSize:       "12",
     fontFamily:     "StarNews",   /* বাংলা ফন্ট ডিফল্ট */
+    contentOnly:    false,
   };
 
   /* ── এলিমেন্ট সরানো ── */
@@ -111,6 +112,62 @@
           margin-left:   15mm;
           margin-right:  15mm;
         }
+
+        /* ──── কন্টেন্ট-অনলি মোড ──── */
+        ${s.contentOnly ? `
+          /* নেভিগেশন লুকান */
+          nav, .navbar, .nav, .navigation, .header-nav, .top-nav,
+          header nav, .main-nav, .site-nav, [role="navigation"],
+          .menu, .sidebar-menu, .nav-menu, .topbar, .navbar-header {
+            display: none !important;
+          }
+
+          /* সাইডবার লুকান */
+          aside, .sidebar, .side-bar, .left-sidebar, .right-sidebar,
+          .sidebar-left, .sidebar-right, .aside, [role="complementary"],
+          .menu-sidebar, .nav-sidebar, .widget-area, .secondary {
+            display: none !important;
+          }
+
+          /* মূল পেজ হেডার লুকান */
+          .page-header, .site-header, .header, .top-header,
+          #header, .header-area, .page-title-bar, .title-bar {
+            display: none !important;
+          }
+
+          /* ফুটার ও কপিরাইট লুকান */
+          footer, .footer, .site-footer, #footer, .page-footer,
+          .footer-area, .copyright, .site-info, .footer-content {
+            display: none !important;
+          }
+
+          /* বিজ্ঞাপন ও প্রমোশন লুকান */
+          .advertisement, .ad, .ads, .promo, .promotion,
+          .banner, .sponsor, [class*="ad-"], [class*="ads-"],
+          .advert, .promotional, .promo-banner {
+            display: none !important;
+          }
+
+          /* সোশ্যাল ও শেয়ার বাটন লুকান */
+          .social, .share, .sharing, .social-share,
+          .social-links, .share-buttons, [class*="share-"] {
+            display: none !important;
+          }
+
+          /* এক্সট্রা ইউআই লুকান */
+          .breadcrumb, .breadcrumbs, .pagination, .pager,
+          .toolbar, .action-bar, .controls, .filters,
+          .search-box, .search-form, .search-bar {
+            display: none !important;
+          }
+
+          /* মূল কন্টেন্ট শুধু দেখান */
+          main, .main, .content, .main-content, #content,
+          .page-content, .article-content, .post-content,
+          body > *:not(main):not(.${HEADER_ID.substring(2)}):not(.${FOOTER_ID.substring(2)}) {
+            max-width: 100% !important;
+          }
+        ` : ""}
 
         /* ──── হেডার ──── */
         #${HEADER_ID} {

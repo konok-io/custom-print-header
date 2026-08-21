@@ -24,6 +24,7 @@ const DEFAULTS = {
   borderColor: "#2563eb",
   fontSize: "12",
   fontFamily: "Arial",
+  contentOnly: false,
 };
 
 const THEMES = {
@@ -239,6 +240,7 @@ function populateForm(s) {
   setChk("enableToggle",  s.enabled);
   setChk("headerEnabled", s.headerEnabled);
   setChk("footerEnabled", s.footerEnabled);
+  setChk("contentOnly", s.contentOnly);
   setVal("companyName",  s.companyName);
   setVal("tagline",      s.tagline);
   setVal("address",      s.address);
@@ -287,6 +289,7 @@ function getSettings() {
     enabled:       chk("enableToggle"),
     headerEnabled: chk("headerEnabled"),
     footerEnabled: chk("footerEnabled"),
+    contentOnly:    chk("contentOnly"),
     headerMode:    val("headerMode", "fields"),
     footerMode:    val("footerMode", "fields"),
     headerSvg:     savedHeaderSvg,
