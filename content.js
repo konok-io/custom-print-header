@@ -268,77 +268,91 @@
         /* Chrome সামঞ্জস্যতা */
         html, body {
           overflow: visible !important;
+          min-height: auto !important;
           background: #ffffff !important;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
         }
 
-        /* ── PC লেআউট ফোর্স করা ── */
-        
-        /* Flexbox ফিক্স - মোবাইল wrap বন্ধ */
-        .row, .row > *, .d-flex, .flex-row, [class*="row-"],
-        .container, .container-fluid, .container-sm, .container-md, .container-lg, .container-xl,
-        .wrapper, .main-wrapper, .page-wrapper, .content-wrapper, .site-content,
-        #main, #content, #main-content, .main-content, main,
-        form, fieldset, section, article, aside, div {
-          flex-wrap: nowrap !important;
-          flex-direction: row !important;
+        /* ── সব এলিমেন্ট দৃশ্যমান ── */
+        * {
+          visibility: visible !important;
+          opacity: 1 !important;
+          overflow: visible !important;
         }
 
-        /* কন্টেইনার - পিসি সাইজ বজায় রাখা */
+        /* ── কন্টেইনার - পিসি লেআউট বজায় রাখা ── */
         .container, .container-fluid, .container-sm, .container-md, .container-lg, .container-xl {
-          width: auto !important;
-          max-width: none !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          flex-basis: 100% !important;
         }
 
-        /* Bootstrap/Material Grid - কলাম PC লেআউট */
-        .row [class*="col-"], .row [class*="col-md"], .row [class*="col-lg"],
-        .row [class*="col-sm"], .row .col {
-          flex: 1 1 auto !important;
-          width: auto !important;
-          max-width: none !important;
+        /* ── সব ডিভ/সেকশন পূর্ণ প্রস্থ ── */
+        div, section, article, aside, main, form, fieldset, figure, figcaption,
+        .wrapper, .main-wrapper, .page-wrapper, .content-wrapper, .site-content,
+        #main, #content, #main-content, .main-content, .panel, .card, .box {
+          width: 100% !important;
+          max-width: 100% !important;
+          min-width: 100% !important;
         }
 
-        /* মোবাইল-specific ক্লাস বন্ধ */
-        .d-none, .d-sm-none, .d-md-none, .d-lg-none,
-        [class*="d-none"]:not(.d-print-block) {
+        /* ── Bootstrap Grid - পিসি লেআউট ── */
+        .row {
           display: flex !important;
+          flex-wrap: wrap !important;
+          flex-direction: row !important;
+          width: 100% !important;
         }
-
-        /* মোবাইল মেনু ও নেভিগেশন লুকাবে */
-        .navbar-toggle, .hamburger, .menu-toggle, .mobile-menu, .nav-toggle,
-        .offcanvas, .sidebar-toggle, .drawer, .mobile-nav, [class*="mobile-"],
-        .navbar-collapse, .nav-collapse, .show, .collapse:not(.show) {
-          display: none !important;
-        }
-
-        /* টেবিল ঠিক করা */
-        table {
-          table-layout: auto !important;
+        .row > [class*="col-"], .row > [class*="col-md"], .row > [class*="col-lg"],
+        .row > [class*="col-sm"], .row > .col, .row > div {
+          flex: 1 1 0 !important;
+          max-width: none !important;
           width: auto !important;
+        }
+
+        /* ── টেবিল পূর্ণ প্রস্থ ── */
+        table {
+          width: 100% !important;
+          max-width: 100% !important;
+          table-layout: auto !important;
         }
         table, thead, tbody, tr, th, td {
           page-break-inside: avoid !important;
+          display: table-cell !important;
         }
         td, th {
           width: auto !important;
           white-space: normal !important;
         }
 
-        /* মোবাইল হাইডেন লুকাবে */
+        /* ── মোবাইল মেনু লুকাবে ── */
+        .navbar-toggle, .hamburger, .menu-toggle, .mobile-menu, .nav-toggle,
+        .offcanvas, .sidebar-toggle, .drawer, .mobile-nav, [class*="mobile-"],
+        .navbar-collapse, .nav-collapse, .show, .collapse:not(.show) {
+          display: none !important;
+          visibility: hidden !important;
+        }
+
+        /* ── মোবাইল হাইডেন লুকাবে ── */
         .hidden-print {
           display: none !important;
         }
 
-        /* ইনপুট/ছবি সাইজ */
-        input, select, textarea, button, img {
+        /* ── ইনপুট/ছবি ── */
+        input, select, textarea, button, img, canvas {
           width: auto !important;
           height: auto !important;
         }
 
-        /* লিস্ট */
+        /* ── লিস্ট ঠিক ── */
+        ul, ol {
+          width: 100% !important;
+          display: block !important;
+        }
         li {
           page-break-inside: avoid !important;
+          display: list-item !important;
         }
 
         /* ──── ৫. ওয়াটারমার্ক (শুধু প্রিন্টে) ──── */
