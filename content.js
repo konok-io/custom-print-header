@@ -265,13 +265,12 @@
         }
         
         /* CSS counter for page numbers */
-        @page { counter-increment: page; }
-        body { counter-reset: page; }
-
         @page {
           size: A4 ${s.pageOrientation || "portrait"};
           margin: 10mm;
+          counter-increment: page;
         }
+        body { counter-reset: page; }
 
         /* Chrome সামঞ্জস্যতা */
         html, body {
@@ -556,9 +555,10 @@
         }
 
         ${!svgFooter ? `
-          #${FOOTER_ID} .cphf-footer-left   { flex: 1; text-align: left; max-width: 40%; direction: ltr !important; }
+          #${FOOTER_ID} .cphf-footer-left   { flex: 1; text-align: left; direction: ltr !important; }
           #${FOOTER_ID} .cphf-footer-center { flex: 1; text-align: center; direction: ltr !important; }
-          #${FOOTER_ID} .cphf-footer-right  { flex: 1; text-align: right; max-width: 40%; direction: ltr !important; }
+          #${FOOTER_ID} .cphf-footer-right  { flex: 1; text-align: right; direction: ltr !important; }
+          #${FOOTER_ID} .cphf-page-counter::before { content: counter(page); }
           #${FOOTER_ID} span { max-width: 100%; word-break: break-word; font-family: ${usedFont}; }
         ` : `#${FOOTER_ID} svg { width: 100%; height: auto; display: block; }`}
 
@@ -655,10 +655,12 @@
             { year: "numeric", month: "long", day: "numeric" });
           right = right ? `${right} | ${d}` : d;
         }
+        // পেজ নম্বর ডান পাশে
+        const pageNum = s.pageNumbers ? `<span class="cphf-page-num">পেজ <span class="cphf-page-counter"></span></span>` : "";
         footer.innerHTML = `
           <span class="cphf-footer-left">${left}</span>
           <span class="cphf-footer-center">${center}</span>
-          <span class="cphf-footer-right">${right}</span>
+          <span class="cphf-footer-right">${right}${pageNum ? ' | ' + pageNum : ''}</span>
         `;
       }
       document.body.appendChild(footer);
