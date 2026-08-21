@@ -116,9 +116,20 @@
     const watermarkText = s.watermark === "custom" ? s.watermarkText : s.watermark;
     const wmColor = s.watermarkColor || "#000000";
 
+    /* ── ২.১. স্ক্রিনে RTL ঠিক করা (প্রিন্টের আগে দেখার জন্য) ── */
+    let rtlScreenCSS = "";
+    if (s.fixRtl) {
+      rtlScreenCSS = `
+        html[dir="rtl"], body[dir="rtl"] { direction: ltr !important; text-align: left !important; }
+        [dir="rtl"], .rtl, [class*="rtl"] { direction: ltr !important; text-align: left !important; }
+        table, thead, tbody, tr, th, td { direction: ltr !important; text-align: left !important; }
+        * { direction: ltr !important; unicode-bidi: plaintext !important; }
+      `;
+    }
+
     const style = document.createElement("style");
-    style.id    = STYLE_ID;
-    style.textContent = `
+    style.id = STYLE_ID;
+    style.textContent = rtlScreenCSS + `
       #${HEADER_ID}, #${FOOTER_ID}, #__cphf_page_num__, #__cphf_watermark__ { display: none !important; }
 
       @media print {
@@ -175,12 +186,35 @@
           }
         ` : ""}
 
-        /* ──── ৩. RTL ঠিক করুন ──── */
+        /* ──── ৩. RTL ওয়েবসাইট English/LTR স্টাইলে ──── */
         ${s.fixRtl ? `
-          body, html { direction: ltr !important; }
-          * { text-align: left !important; unicode-bidi: plaintext !important; }
-          table { direction: ltr !important; }
-          td, th { direction: ltr !important; text-align: left !important; }
+          /* মূল স্ক্রিনে RTL ঠিক করা */
+          html[dir="rtl"], body[dir="rtl"], [style*="direction: rtl"] {
+            direction: ltr !important;
+            text-align: left !important;
+          }
+          
+          /* সব টেক্সট ও এলিমেন্ট LTR করা */
+          [dir="rtl"], [style*="direction: rtl"], .rtl, [class*="rtl"] {
+            direction: ltr !important;
+            text-align: left !important;
+          }
+          
+          /* টেবিল LTR করা */
+          table, thead, tbody, tr, th, td {
+            direction: ltr !important;
+            text-align: left !important;
+          }
+          
+          /* ফ্লোট ও পজিশন ঠিক করা */
+          * {
+            direction: ltr !important;
+            unicode-bidi: plaintext !important;
+          }
+          
+          /* মার্জিন ও প্যাডিং রিসেট */
+          [dir="rtl"] { margin-right: 0 !important; margin-left: auto !important; }
+          [dir="rtl"] { padding-right: 0 !important; padding-left: auto !important; }
         ` : ""}
 
         /* ──── ৪. ব্যাকগ্রাউন্ড প্রিন্ট ──── */
