@@ -374,6 +374,23 @@
             text-transform: uppercase;
           }
         ` : ""}
+
+        /* ──── ৬. পেজ নম্বর ──── */
+        ${s.pageNumbers ? `
+          #__cphf_page_num__ {
+            display: block !important;
+            position: fixed;
+            ${s.pageNumbersPosition === "header" ? "top: 8px;" : "bottom: 8px;"}
+            right: 15mm;
+            font-family: ${usedFont};
+            font-size: ${fs}px;
+            color: ${s.textColor || "#000"};
+            z-index: 2147483646;
+          }
+          #__cphf_page_num__::before {
+            content: "পেজ " counter(page);
+          }
+        ` : ""}
       }
 
       /* ──── ০. ওয়েবসাইটের মূল হেডার/ফুটার লুকান (সবসময়) ──── */
@@ -474,23 +491,6 @@
           }
         ` : ""}
 
-        /* ──── ৬. পেজ নম্বর ──── */
-        ${s.pageNumbers ? `
-          #__cphf_page_num__ {
-            display: block !important;
-            position: fixed;
-            ${s.pageNumbersPosition === "header" ? "top: 8px;" : "bottom: 8px;"}
-            right: 15mm;
-            font-family: ${usedFont};
-            font-size: ${fs}px;
-            color: ${s.textColor || "#000"};
-            z-index: 2147483646;
-          }
-          #__cphf_page_num__::before {
-            content: "পেজ " counter(page);
-          }
-        ` : ""}
-
         /* ──── হেডার (শুধু প্রিন্টে দেখাবে) ──── */
         #${HEADER_ID} {
           display: none !important;
@@ -505,8 +505,10 @@
           #${HEADER_ID} .cphf-header-content {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 15px;
             padding: 10px 15px;
+            text-align: center;
           }
           /* লোগো */
           #${HEADER_ID} .cphf-logo-wrap {
@@ -518,9 +520,9 @@
             max-height: ${logoSize}px;
             object-fit: contain;
           }
-          /* প্রতিষ্ঠানের তথ্য */
+          /* প্রতিষ্ঠানের তথ্য - সেন্টার */
           #${HEADER_ID} .cphf-company-info {
-            flex: 1;
+            text-align: center;
             direction: ltr !important;
           }
           #${HEADER_ID} .cphf-name {
@@ -531,6 +533,7 @@
             padding: 0;
             color: ${s.textColor || "#1e293b"};
             direction: ltr !important;
+            text-align: center;
           }
           #${HEADER_ID} .cphf-tag {
             font-family: ${usedFont};
@@ -538,11 +541,13 @@
             margin: 2px 0 0;
             color: ${s.textColor || "#64748b"};
             direction: ltr !important;
+            text-align: center;
           }
-          /* কন্টাক্ট রো এবং ডিভাইডার লাইন */
+          /* কন্টাক্ট রো এবং ডিভাইডার লাইন - সেন্টার */
           #${HEADER_ID} .cphf-contact-row {
             display: flex;
             flex-wrap: wrap;
+            justify-content: center;
             gap: 5px 15px;
             padding: 8px 15px;
             border-top: 2px solid ${s.borderColor || "#2563eb"};
@@ -569,6 +574,7 @@
             align-items: center;
             font-family: ${usedFont};
             font-size: ${fs - 1}px;
+            border-top: 2px solid ${s.borderColor || "#2563eb"};
           `}
         }
 
