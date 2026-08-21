@@ -145,15 +145,28 @@
           margin-right:  15mm;
         }
 
-        /* Chrome সামঞ্জস্যতা - body margin রিসেট */
+        /* Chrome সামঞ্জস্যতা - পূর্ণাঙ্গ লেআউট */
+        html {
+          min-width: 100% !important;
+          max-width: none !important;
+          overflow: visible !important;
+        }
+        
         body {
           margin: 0 !important;
           padding: 0 !important;
-          margin-left: 0 !important;
           min-width: 100% !important;
           max-width: none !important;
+          width: auto !important;
+          overflow: visible !important;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
+        }
+
+        /* সব এলিমেন্টের প্রস্থ */
+        * {
+          max-width: none !important;
+          box-sizing: border-box !important;
         }
 
         /* Chrome-এ ইনপুট ও টেবিল সঠিক সাইজ */
@@ -161,6 +174,12 @@
           max-width: none !important;
           width: auto !important;
           min-width: 0 !important;
+        }
+
+        /* RTL ওয়েবসাইটের জন্য */
+        html[dir="rtl"] body, body[dir="rtl"] {
+          margin-right: 0 !important;
+          padding-right: 0 !important;
         }
 
         /* ──── ১. শুধু নেভিগেশন/বিজ্ঞাপন লুকান ──── */
