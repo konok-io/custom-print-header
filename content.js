@@ -145,6 +145,24 @@
           margin-right:  15mm;
         }
 
+        /* Chrome সামঞ্জস্যতা - body margin রিসেট */
+        body {
+          margin: 0 !important;
+          padding: 0 !important;
+          margin-left: 0 !important;
+          min-width: 100% !important;
+          max-width: none !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+
+        /* Chrome-এ ইনপুট ও টেবিল সঠিক সাইজ */
+        input, select, textarea, table, td, th {
+          max-width: none !important;
+          width: auto !important;
+          min-width: 0 !important;
+        }
+
         /* ──── ১. নেভিগেশন/সাইডবার লুকান ──── */
         ${s.contentOnly ? `
           nav, .navbar, .nav, .navigation, .header-nav, .top-nav,
@@ -176,6 +194,7 @@
         ${s.removeFixed ? `
           * {
             position: relative !important;
+            overflow: visible !important;
           }
           [style*="position: fixed"], [style*="position:fixed"],
           [class*="fixed"], [id*="fixed"] {
@@ -184,37 +203,46 @@
           header, nav, .navbar, .header, .topbar, .toolbar {
             position: relative !important;
           }
+          /* Chrome overflow সমস্যা */
+          html, body {
+            overflow: visible !important;
+          }
         ` : ""}
 
         /* ──── ৩. RTL ওয়েবসাইট English/LTR স্টাইলে ──── */
         ${s.fixRtl ? `
-          /* মূল স্ক্রিনে RTL ঠিক করা */
-          html[dir="rtl"], body[dir="rtl"], [style*="direction: rtl"] {
+          /* Chrome সামঞ্জস্যতা */
+          * { box-sizing: border-box !important; }
+          
+          /* RTL ওয়েবসাইট ঠিক করা */
+          html[dir="rtl"], body[dir="rtl"], [dir="rtl"] {
             direction: ltr !important;
             text-align: left !important;
           }
           
-          /* সব টেক্সট ও এলিমেন্ট LTR করা */
-          [dir="rtl"], [style*="direction: rtl"], .rtl, [class*="rtl"] {
+          /* সব এলিমেন্ট LTR */
+          [dir="rtl"], .rtl, [class*="rtl"], [style*="rtl"] {
             direction: ltr !important;
             text-align: left !important;
           }
           
-          /* টেবিল LTR করা */
-          table, thead, tbody, tr, th, td {
+          /* টেবিল ও ফর্ম এলিমেন্ট */
+          table, thead, tbody, tr, th, td, input, select, textarea {
             direction: ltr !important;
             text-align: left !important;
           }
           
-          /* ফ্লোট ও পজিশন ঠিক করা */
+          /* মার্জিন রিসেট - Chrome-এ সমস্যা সমাধান */
+          [dir="rtl"], body[dir="rtl"] {
+            margin-right: 0 !important;
+            padding-right: 0 !important;
+          }
+          
+          /* সব এলিমেন্ট LTR */
           * {
             direction: ltr !important;
             unicode-bidi: plaintext !important;
           }
-          
-          /* মার্জিন ও প্যাডিং রিসেট */
-          [dir="rtl"] { margin-right: 0 !important; margin-left: auto !important; }
-          [dir="rtl"] { padding-right: 0 !important; padding-left: auto !important; }
         ` : ""}
 
         /* ──── ৪. ব্যাকগ্রাউন্ড প্রিন্ট ──── */
