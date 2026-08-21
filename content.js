@@ -291,7 +291,7 @@
           }
         ` : ""}
 
-        /* ──── হেডার (পূর্ণ প্রস্থ) ──── */
+        /* ──── হেডার (পূর্ণ প্রস্থ, LTR) ──── */
         #${HEADER_ID} {
           display: ${hShow ? "block" : "none"} !important;
           position: fixed;
@@ -302,6 +302,8 @@
           z-index: 2147483647;
           background: ${s.bgColor || "#fff"};
           box-sizing: border-box !important;
+          direction: ltr !important;
+          text-align: left !important;
           -webkit-print-color-adjust: exact;
           print-color-adjust: exact;
           overflow: visible !important;
@@ -320,13 +322,13 @@
         ${!svgHeader ? `
           #${HEADER_ID} .cphf-logo  { height: ${logoSize}px; width: auto; object-fit: contain; flex-shrink: 0; }
           #${HEADER_ID} .cphf-div   { width: 2px; height: 54px; background: ${s.borderColor || "#2563eb"}; opacity: .4; flex-shrink: 0; }
-          #${HEADER_ID} .cphf-info  { flex: 1; min-width: 0; font-family: ${usedFont}; }
-          #${HEADER_ID} .cphf-name  { font-family: ${usedFont}; font-size: ${fs + 4}px; font-weight: 700; margin: 0 0 2px; }
-          #${HEADER_ID} .cphf-tag   { font-family: ${usedFont}; font-size: ${fs}px; margin: 0 0 3px; opacity: .78; }
-          #${HEADER_ID} .cphf-det   { font-family: ${usedFont}; font-size: ${fs - 1}px; margin: 0; opacity: .7; }
+          #${HEADER_ID} .cphf-info  { flex: 1; min-width: 0; font-family: ${usedFont}; direction: ltr !important; }
+          #${HEADER_ID} .cphf-name  { font-family: ${usedFont}; font-size: ${fs + 4}px; font-weight: 700; margin: 0 0 2px; direction: ltr !important; }
+          #${HEADER_ID} .cphf-tag   { font-family: ${usedFont}; font-size: ${fs}px; margin: 0 0 3px; opacity: .78; direction: ltr !important; }
+          #${HEADER_ID} .cphf-det   { font-family: ${usedFont}; font-size: ${fs - 1}px; margin: 0; opacity: .7; direction: ltr !important; }
         ` : `#${HEADER_ID} svg { width: 100%; height: auto; display: block; }`}
 
-        /* ──── ফুটার (পূর্ণ প্রস্থ) ──── */
+        /* ──── ফুটার (পূর্ণ প্রস্থ, LTR) ──── */
         #${FOOTER_ID} {
           display: ${fShow ? "block" : "none"} !important;
           position: fixed;
@@ -337,6 +339,8 @@
           z-index: 2147483647;
           background: ${s.bgColor || "#fff"};
           box-sizing: border-box !important;
+          direction: ltr !important;
+          text-align: left !important;
           -webkit-print-color-adjust: exact;
           print-color-adjust: exact;
           overflow: visible !important;
@@ -352,7 +356,7 @@
           `}
         }
 
-        ${!svgFooter ? `#${FOOTER_ID} span { max-width: 33%; word-break: break-word; font-family: ${usedFont}; }` : `#${FOOTER_ID} svg { width: 100%; height: auto; display: block; }`}
+        ${!svgFooter ? `#${FOOTER_ID} span { max-width: 33%; word-break: break-word; font-family: ${usedFont}; direction: ltr !important; }` : `#${FOOTER_ID} svg { width: 100%; height: auto; display: block; }`}
       }
     `;
     document.head.appendChild(style);
