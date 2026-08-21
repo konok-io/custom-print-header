@@ -55,15 +55,39 @@
   /* ── RTL → LTR ডাইরেকশন ঠিক করা ── */
   function fixRtlDirection(enable) {
     if (enable) {
-      // html/body এর dir অ্যাট্রিবিউট পরিবর্তন
+      // html/body এর dir অ্যাট্রিবিউট পরিবর্তন (inline style সহ)
       document.documentElement.setAttribute("dir", "ltr");
       document.body.setAttribute("dir", "ltr");
-      document.documentElement.style.direction = "ltr";
-      document.body.style.direction = "ltr";
+      document.documentElement.style.setProperty("direction", "ltr", "important");
+      document.documentElement.style.setProperty("text-align", "left", "important");
+      document.body.style.setProperty("direction", "ltr", "important");
+      document.body.style.setProperty("text-align", "left", "important");
       
       // সব RTL এলিমেন্ট খুঁজে dir পরিবর্তন
       document.querySelectorAll("[dir='rtl']").forEach(el => {
         el.setAttribute("dir", "ltr");
+        el.style.setProperty("direction", "ltr", "important");
+        el.style.setProperty("text-align", "left", "important");
+      });
+      
+      // RTL ক্লাস খুঁজে LTR ক্লাসে পরিবর্তন
+      document.querySelectorAll("[class*='rtl'], [class*='RTL'], .rtl, .RTL").forEach(el => {
+        let cls = el.className;
+        if (typeof cls === 'string') {
+          cls = cls.replace(/rtl/gi, 'ltr');
+          el.className = cls;
+        }
+        el.style.setProperty("direction", "ltr", "important");
+        el.style.setProperty("text-align", "left", "important");
+      });
+      
+      // আরবি ফন্ট প্রতিস্থাপন (যদি থাকে)
+      document.querySelectorAll("*").forEach(el => {
+        const fontFamily = window.getComputedStyle(el).fontFamily;
+        if (fontFamily && (fontFamily.includes("Arabic") || fontFamily.includes("Traditional Arabic") || 
+            fontFamily.includes("Amiri") || fontFamily.includes("Noto Sans Arabic"))) {
+          el.style.setProperty("font-family", "Arial, sans-serif", "important");
+        }
       });
       
       // MutationObserver দিয়ে নতুন RTL এলিমেন্ট ট্র্যাক করা
@@ -75,18 +99,38 @@
                 if (node.getAttribute && node.getAttribute("dir") === "rtl") {
                   node.setAttribute("dir", "ltr");
                 }
-                node.querySelectorAll && node.querySelectorAll("[dir='rtl']").forEach(el => {
-                  el.setAttribute("dir", "ltr");
-                });
+                // নতুন যুক্ত এলিমেন্টের জন্যও চেক
+                if (node.querySelectorAll) {
+                  node.querySelectorAll("[dir='rtl']").forEach(el => {
+                    el.setAttribute("dir", "ltr");
+                  });
+                }
               }
             });
           });
         });
         window.__cphf_rtl_observer.observe(document.body, { 
           childList: true, 
-          subtree: true,
+          subtree: true
+        });
+      }
+      
+      // সব inline style ট্র্যাক করার জন্য attribute observer
+      if (!window.__cphf_style_observer) {
+        window.__cphf_style_observer = new MutationObserver(mutations => {
+          mutations.forEach(mutation => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+              const el = mutation.target;
+              if (el.getAttribute && el.getAttribute("dir") === "rtl") {
+                el.setAttribute("dir", "ltr");
+              }
+            }
+          });
+        });
+        window.__cphf_style_observer.observe(document.documentElement, {
           attributes: true,
-          attributeFilter: ["dir"]
+          attributeFilter: ["style", "dir"],
+          subtree: true
         });
       }
     } else {
@@ -94,6 +138,10 @@
       if (window.__cphf_rtl_observer) {
         window.__cphf_rtl_observer.disconnect();
         window.__cphf_rtl_observer = null;
+      }
+      if (window.__cphf_style_observer) {
+        window.__cphf_style_observer.disconnect();
+        window.__cphf_style_observer = null;
       }
     }
   }
@@ -388,22 +436,9 @@
           }
         ` : ""}
 
-        /* ──── হেডার (পূর্ণ প্রস্থ, LTR) ──── */
+        /* ──── হেডার (শুধু প্রিন্টে দেখাবে) ──── */
         #${HEADER_ID} {
-          display: ${hShow ? "block" : "none"} !important;
-          position: fixed;
-          top: 0; left: 0; right: 0;
-          width: 100% !important;
-          min-width: 100% !important;
-          max-width: 100% !important;
-          z-index: 2147483647;
-          background: ${s.bgColor || "#fff"};
-          box-sizing: border-box !important;
-          direction: ltr !important;
-          text-align: left !important;
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
-          overflow: visible !important;
+          display: none !important;
           ${svgHeader ? "padding: 0;" : `
             color: ${s.textColor || "#000"};
             border-bottom: 2.5px solid ${s.borderColor || "#2563eb"};
@@ -425,22 +460,9 @@
           #${HEADER_ID} .cphf-det   { font-family: ${usedFont}; font-size: ${fs - 1}px; margin: 0; opacity: .7; direction: ltr !important; }
         ` : `#${HEADER_ID} svg { width: 100%; height: auto; display: block; }`}
 
-        /* ──── ফুটার (পূর্ণ প্রস্থ, LTR) ──── */
+        /* ──── ফুটার (শুধু প্রিন্টে দেখাবে) ──── */
         #${FOOTER_ID} {
-          display: ${fShow ? "block" : "none"} !important;
-          position: fixed;
-          bottom: 0; left: 0; right: 0;
-          width: 100% !important;
-          min-width: 100% !important;
-          max-width: 100% !important;
-          z-index: 2147483647;
-          background: ${s.bgColor || "#fff"};
-          box-sizing: border-box !important;
-          direction: ltr !important;
-          text-align: left !important;
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
-          overflow: visible !important;
+          display: none !important;
           ${svgFooter ? "padding: 0;" : `
             color: ${s.textColor || "#555"};
             border-top: 1.5px solid ${s.borderColor || "#2563eb"};
@@ -454,6 +476,42 @@
         }
 
         ${!svgFooter ? `#${FOOTER_ID} span { max-width: 33%; word-break: break-word; font-family: ${usedFont}; direction: ltr !important; }` : `#${FOOTER_ID} svg { width: 100%; height: auto; display: block; }`}
+
+        /* ──── প্রিন্টে হেডার/ফুটার দেখাবে ──── */
+        @media print {
+          #${HEADER_ID} {
+            display: ${hShow ? "block" : "none"} !important;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            width: 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+            z-index: 2147483647;
+            background: ${s.bgColor || "#fff"};
+            box-sizing: border-box !important;
+            direction: ltr !important;
+            text-align: left !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            overflow: visible !important;
+          }
+          #${FOOTER_ID} {
+            display: ${fShow ? "block" : "none"} !important;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            width: 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+            z-index: 2147483647;
+            background: ${s.bgColor || "#fff"};
+            box-sizing: border-box !important;
+            direction: ltr !important;
+            text-align: left !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            overflow: visible !important;
+          }
+        }
       }
     `;
     document.head.appendChild(style);
