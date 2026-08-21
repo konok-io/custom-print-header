@@ -172,6 +172,7 @@
   <div class="tab active" data-tab="tab-header">📋 হেডার</div>
   <div class="tab" data-tab="tab-footer">📄 ফুটার</div>
   <div class="tab" data-tab="tab-design">🎨 ডিজাইন</div>
+  <div class="tab" data-tab="tab-features">⚡ ফিচার</div>
 </div>
 
 <!-- ═══════ HEADER TAB ═══════ -->
@@ -447,6 +448,107 @@
       <div class="theme-dot" title="Red" data-theme="red" style="background:#e11d48"></div>
       <div class="theme-dot" title="Dark" data-theme="dark" style="background:#1e293b"></div>
     </div>
+  </div>
+</div>
+
+<!-- ═══════ FEATURES TAB ═══════ -->
+<div id="tab-features" class="tab-content">
+
+  <!-- Presets -->
+  <div class="card">
+    <div class="card-title">📁 প্রিসেট সিস্টেম</div>
+    <div class="form-row">
+      <label>প্রিসেট সিলেক্ট করুন</label>
+      <select id="presetSelect">
+        <option value="default">🔧 ডিফল্ট</option>
+        <option value="invoice">📋 ইনভয়েস</option>
+        <option value="report">📊 রিপোর্ট</option>
+        <option value="letter">📝 লেটারহেড</option>
+      </select>
+    </div>
+    <button class="btn-outline" id="savePresetBtn" style="margin-top:8px">💾 প্রিসেট হিসেবে সেভ করুন</button>
+  </div>
+
+  <!-- Page Numbers -->
+  <div class="card">
+    <div class="sub-toggle-row">
+      <span>🔢 পেজ নম্বর দেখাবে</span>
+      <label class="switch switch-sm">
+        <input type="checkbox" id="pageNumbers">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <p class="hint">প্রতিটি পেজে পেজ ১/২/৩... দেখাবে</p>
+  </div>
+
+  <!-- Watermark -->
+  <div class="card">
+    <div class="card-title">💧 ওয়াটারমার্ক</div>
+    <div class="form-row">
+      <label>ধরন</label>
+      <select id="watermarkType">
+        <option value="none">নেই</option>
+        <option value="DRAFT">DRAFT</option>
+        <option value="CONFIDENTIAL">CONFIDENTIAL</option>
+        <option value="COPY">COPY</option>
+        <option value="ORIGINAL">ORIGINAL</option>
+        <option value="SAMPLE">SAMPLE</option>
+        <option value="custom">কাস্টম টেক্সট</option>
+      </select>
+    </div>
+    <div id="watermarkCustomSection" style="display:none">
+      <div class="form-row" style="margin-top:8px">
+        <label>কাস্টম টেক্সট</label>
+        <input type="text" id="watermarkText" placeholder="আপনার টেক্সট লিখুন">
+      </div>
+    </div>
+    <div class="color-row" style="margin-top:8px">
+      <div class="form-row">
+        <label>রঙ</label>
+        <div class="color-wrap">
+          <input type="color" id="watermarkColor" value="#000000">
+          <span class="color-hex" id="watermarkColorHex">#000000</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>স্বচ্ছতা: <span id="watermarkOpacityVal">10%</span></label>
+        <input type="range" id="watermarkOpacity" min="0.05" max="0.3" step="0.05" value="0.1" style="width:100%">
+      </div>
+    </div>
+  </div>
+
+  <!-- Logo Size -->
+  <div class="card">
+    <div class="card-title">🖼️ লোগো সাইজ</div>
+    <div class="form-row">
+      <label>সাইজ: <span id="logoSizeVal">58</span>px</label>
+      <input type="range" id="logoSize" min="30" max="120" value="58" step="1">
+    </div>
+  </div>
+
+  <!-- Export/Import -->
+  <div class="card">
+    <div class="card-title">💾 ব্যাকআপ ও রিস্টোর</div>
+    <div class="mode-row">
+      <button class="btn-outline" id="exportBtn" style="flex:1">📤 এক্সপোর্ট</button>
+      <button class="btn-outline" id="importBtn" style="flex:1">📥 ইমপোর্ট</button>
+    </div>
+    <p class="hint">সেটিংস JSON ফাইলে সেভ করুন অথবা রিস্টোর করুন</p>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="card">
+    <div class="card-title">⚡ দ্রুত অ্যাকশন</div>
+    <div class="mode-row">
+      <button class="btn-outline" id="previewBtn" style="flex:1">👁️ প্রিভিউ দেখুন</button>
+      <button class="btn-outline" id="pdfExportBtn" style="flex:1">📄 PDF সেভ</button>
+    </div>
+  </div>
+
+  <!-- Keyboard Shortcut Info -->
+  <div class="card">
+    <div class="card-title">⌨️ কীবোর্ড শর্টকাট</div>
+    <p class="hint">প্রিন্ট করতে <code>Ctrl + P</code> চাপুন</p>
   </div>
 </div>
 

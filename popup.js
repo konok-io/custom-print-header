@@ -15,6 +15,7 @@ const DEFAULTS = {
   email: "",
   website: "",
   logoData: "",
+  logoSize: "58",
   footerLeft: "",
   footerCenter: "",
   footerRight: "",
@@ -25,11 +26,49 @@ const DEFAULTS = {
   fontSize: "14",
   fontFamily: "Arial",
   contentOnly: false,
-  pageOrientation: "portrait", // portrait | landscape
+  pageOrientation: "portrait",
   fixRtl: false,
   removeFixed: false,
   printBackground: false,
   forceReload: false,
+  // New features
+  pageNumbers: false,
+  pageNumbersPosition: "footer",
+  watermark: "none",
+  watermarkText: "",
+  watermarkColor: "#000000",
+  watermarkOpacity: "0.1",
+  presetName: "default",
+};
+
+const PRESETS = {
+  invoice: {
+    name: "📋 ইনভয়েস",
+    companyName: "আপনার প্রতিষ্ঠান",
+    tagline: "চালান",
+    footerLeft: "ইনভয়েস #১২৩৪",
+    footerCenter: "ধন্যবাদ",
+    footerRight: "মোট: ৳০",
+    watermark: "none",
+  },
+  report: {
+    name: "📊 রিপোর্ট",
+    companyName: "প্রতিষ্ঠান নাম",
+    tagline: "মাসিক রিপোর্ট",
+    footerLeft: "গোপনীয়",
+    footerCenter: "",
+    footerRight: "",
+    watermark: "CONFIDENTIAL",
+  },
+  letter: {
+    name: "📝 লেটারহেড",
+    companyName: "আপনার নাম/প্রতিষ্ঠান",
+    tagline: "যোগাযোগ: +৮৮০-XXXXXXXXX",
+    footerLeft: "",
+    footerCenter: "",
+    footerRight: "",
+    watermark: "none",
+  },
 };
 
 const THEMES = {
@@ -254,6 +293,8 @@ function populateForm(s) {
   setChk("removeFixed", s.removeFixed);
   setChk("printBackground", s.printBackground);
   setChk("forceReload", s.forceReload);
+  setChk("pageNumbers", s.pageNumbers);
+  setChk("watermarkEnabled", s.watermark !== "none");
   setMode("orientation", s.pageOrientation || "portrait");
   setVal("companyName",  s.companyName);
   setVal("tagline",      s.tagline);
@@ -270,10 +311,27 @@ function populateForm(s) {
   setVal("borderColor",  s.borderColor);
   setVal("fontSize",     s.fontSize);
   setVal("fontFamily",   s.fontFamily);
+  setVal("logoSize",     s.logoSize || "58");
   $("bgColorHex").textContent     = s.bgColor;
   $("textColorHex").textContent   = s.textColor;
   $("borderColorHex").textContent = s.borderColor;
   if ($("fontSizeVal")) $("fontSizeVal").textContent = s.fontSize;
+  if ($("logoSizeVal")) $("logoSizeVal").textContent = s.logoSize || "58";
+
+  // Page numbers
+  if ($("pageNumbersPosition")) $("pageNumbersPosition").value = s.pageNumbersPosition || "footer";
+  
+  // Watermark
+  if ($("watermarkType")) $("watermarkType").value = s.watermark || "none";
+  if ($("watermarkText")) $("watermarkText").value = s.watermarkText || "";
+  if ($("watermarkColor")) $("watermarkColor").value = s.watermarkColor || "#000000";
+  if ($("watermarkOpacity")) $("watermarkOpacity").value = s.watermarkOpacity || "0.1";
+  $("watermarkColorHex").textContent = s.watermarkColor || "#000000";
+  $("watermarkOpacityVal").textContent = ((parseFloat(s.watermarkOpacity || "0.1")) * 100) + "%";
+
+  // Preset
+  if ($("presetSelect")) $("presetSelect").value = s.presetName || "default";
+  if ($("presetName")) $("presetName").value = s.presetName || "default";
 
   // logo
   savedLogoData = s.logoData || "";
@@ -320,6 +378,7 @@ function getSettings() {
     email:         val("email"),
     website:       val("website"),
     logoData:      savedLogoData,
+    logoSize:      val("logoSize", "58"),
     footerLeft:    val("footerLeft"),
     footerCenter:  val("footerCenter"),
     footerRight:   val("footerRight"),
@@ -327,8 +386,16 @@ function getSettings() {
     bgColor:       val("bgColor",     "#ffffff"),
     textColor:     val("textColor",   "#000000"),
     borderColor:   val("borderColor", "#2563eb"),
-    fontSize:      val("fontSize",    "12"),
+    fontSize:      val("fontSize",    "14"),
     fontFamily:    val("fontFamily",  "Arial"),
+    // New features
+    pageNumbers: chk("pageNumbers"),
+    pageNumbersPosition: val("pageNumbersPosition", "footer"),
+    watermark: val("watermarkType", "none"),
+    watermarkText: val("watermarkText"),
+    watermarkColor: val("watermarkColor", "#000000"),
+    watermarkOpacity: val("watermarkOpacity", "0.1"),
+    presetName: val("presetName", "default"),
   };
 }
 
@@ -377,5 +444,235 @@ function showStatus(msg, type = "success") {
   setTimeout(() => { el.style.display = "none"; }, 3000);
 }
 
-/* ── Init ── */
+/* ── Preset System ── */
+function loadPreset(presetKey) {
+  if (presetKey === "default") {
+    chrome.storage.local.get("printSettings", result => {
+      if (result.printSettings) {
+        populateForm(result.printSettings);
+        showStatus("✓ ডিফল্ট সেটিংস লোড হয়েছে", "success");
+      }
+    });
+    return;
+  }
+  
+  const preset = PRESETS[presetKey];
+  if (!preset) return;
+  
+  const currentSettings = getSettings();
+  const newSettings = { ...currentSettings, ...preset, presetName: presetKey };
+  populateForm(newSettings);
+  showStatus(`✓ ${preset.name} প্রিসেট লোড হয়েছে!`, "success");
+}
+
+function saveAsPreset() {
+  const name = prompt("প্রিসেটের নাম দিন:");
+  if (!name) return;
+  
+  chrome.storage.local.get("customPresets", result => {
+    const presets = result.customPresets || {};
+    presets[name] = getSettings();
+    presets[name].presetName = name;
+    chrome.storage.local.set({ customPresets: presets }, () => {
+      showStatus(`✓ "${name}" প্রিসেট সেভ হয়েছে!`, "success");
+      updatePresetDropdown();
+    });
+  });
+}
+
+function updatePresetDropdown() {
+  const select = $("presetSelect");
+  if (!select) return;
+  
+  chrome.storage.local.get("customPresets", result => {
+    const customPresets = result.customPresets || {};
+    const options = select.querySelectorAll("option[data-custom]");
+    options.forEach(o => o.remove());
+    
+    Object.keys(customPresets).forEach(name => {
+      const option = document.createElement("option");
+      option.value = name;
+      option.textContent = "📁 " + name;
+      option.setAttribute("data-custom", "true");
+      select.appendChild(option);
+    });
+  });
+}
+
+/* ── Export / Import Settings ── */
+function exportSettings() {
+  const settings = getSettings();
+  const blob = new Blob([JSON.stringify(settings, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `print-settings-${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showStatus("✓ সেটিংস এক্সপোর্ট হয়েছে!", "success");
+}
+
+function importSettings() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json";
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const settings = JSON.parse(ev.target.result);
+        chrome.storage.local.set({ printSettings: settings }, () => {
+          populateForm(settings);
+          showStatus("✓ সেটিংস ইমপোর্ট হয়েছে!", "success");
+        });
+      } catch (err) {
+        showStatus("❌ ফাইল পড়তে সমস্যা হয়েছে", "error");
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+/* ── Direct PDF Export ── */
+function exportToPDF() {
+  chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+    if (!tabs[0]) return;
+    
+    chrome.scripting.executeScript({
+      target: { tabId: tabs[0].id },
+      func: () => {
+        window.print();
+      }
+    });
+  });
+}
+
+/* ── Live Preview ── */
+function showPreview() {
+  const previewWindow = window.open("", "preview", "width=600,height=800");
+  const settings = getSettings();
+  const html = generatePreviewHTML(settings);
+  previewWindow.document.write(html);
+  previewWindow.document.close();
+}
+
+function generatePreviewHTML(s) {
+  const fs = parseInt(s.fontSize) || 14;
+  const logoSize = parseInt(s.logoSize) || 58;
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>প্রিন্ট প্রিভিউ</title>
+      <style>
+        @font-face {
+          font-family: 'Bangla'; src: url('fonts/bangla.ttf'); font-display: swap;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Bangla', sans-serif; background: #e5e7eb; padding: 20px; }
+        .paper { 
+          background: white; width: 210mm; min-height: 297mm; 
+          margin: 0 auto; padding: 20mm; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+          position: relative;
+        }
+        .header {
+          border-bottom: 2px solid ${s.borderColor};
+          padding-bottom: 10px; margin-bottom: 20px;
+          display: flex; align-items: center; gap: 15px;
+        }
+        .logo { height: ${logoSize}px; width: auto; }
+        .company-info h2 { font-size: ${fs + 4}px; color: ${s.textColor}; }
+        .company-info p { font-size: ${fs}px; color: ${s.textColor}; opacity: 0.7; }
+        .content { font-size: ${fs}px; color: ${s.textColor}; line-height: 1.8; }
+        .content p { margin-bottom: 15px; }
+        .footer {
+          border-top: 1px solid ${s.borderColor};
+          padding-top: 10px; margin-top: 20px;
+          display: flex; justify-content: space-between; font-size: ${fs - 1}px;
+        }
+        ${s.watermark !== "none" ? `
+        .watermark {
+          position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg);
+          font-size: 80px; color: ${s.watermarkColor || "#000"}; opacity: ${parseFloat(s.watermarkOpacity) || 0.1};
+          pointer-events: none; z-index: 10;
+        }
+        ` : ""}
+        @media print { body { background: none; padding: 0; } .paper { box-shadow: none; } }
+      </style>
+    </head>
+    <body>
+      <div class="paper" style="background: ${s.bgColor}">
+        ${s.watermark !== "none" ? `<div class="watermark">${s.watermark === "custom" ? s.watermarkText : s.watermark}</div>` : ""}
+        <div class="header">
+          ${s.logoData ? `<img src="${s.logoData}" class="logo">` : ""}
+          <div class="company-info">
+            <h2>${s.companyName || "কোম্পানির নাম"}</h2>
+            <p>${s.tagline || "ট্যাগলাইন"}</p>
+          </div>
+        </div>
+        <div class="content">
+          <p>এখানে আপনার মূল কন্টেন্ট আসবে...</p>
+          <p>বিন মিশাল প্রিন্ট লেআউট এক্সটেনশন দিয়ে আপনি যেকোনো ওয়েবপেজ প্রিন্ট করার সময় কাস্টম হেডার ও ফুটার যোগ করতে পারবেন।</p>
+        </div>
+        <div class="footer">
+          <span>${s.footerLeft || ""}</span>
+          <span>${s.footerCenter || ""}</span>
+          <span>${s.footerRight || ""}</span>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+/* ── Event Listeners for New Features ── */
+
+// Preset dropdown
+$("presetSelect")?.addEventListener("change", e => loadPreset(e.target.value));
+
+// Load preset buttons
+document.querySelectorAll(".preset-load-btn").forEach(btn => {
+  btn?.addEventListener("click", () => loadPreset(btn.dataset.preset));
+});
+
+// Save preset button
+$("savePresetBtn")?.addEventListener("click", saveAsPreset);
+
+// Export/Import
+$("exportBtn")?.addEventListener("click", exportSettings);
+$("importBtn")?.addEventListener("click", importSettings);
+
+// PDF Export
+$("pdfExportBtn")?.addEventListener("click", exportToPDF);
+
+// Live Preview
+$("previewBtn")?.addEventListener("click", showPreview);
+
+// Logo size slider
+$("logoSize")?.addEventListener("input", e => {
+  if ($("logoSizeVal")) $("logoSizeVal").textContent = e.target.value;
+});
+
+// Watermark type change
+$("watermarkType")?.addEventListener("change", e => {
+  const customSection = $("watermarkCustomSection");
+  if (customSection) {
+    customSection.style.display = e.target.value === "custom" ? "block" : "none";
+  }
+});
+
+// Watermark color/opacity
+syncColor("watermarkColor", "watermarkColorHex");
+$("watermarkOpacity")?.addEventListener("input", e => {
+  if ($("watermarkOpacityVal")) {
+    $("watermarkOpacityVal").textContent = (parseFloat(e.target.value) * 100) + "%";
+  }
+});
+
+// Init
+updatePresetDropdown();
 loadSettings();

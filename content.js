@@ -21,6 +21,7 @@
     email:          "",
     website:        "",
     logoData:       "",
+    logoSize:       "58",
     footerLeft:     "",
     footerCenter:   "",
     footerRight:    "",
@@ -29,18 +30,24 @@
     textColor:      "#000000",
     borderColor:    "#2563eb",
     fontSize:       "14",
-    fontFamily:     "StarNews",   /* বাংলা ফন্ট ডিফল্ট */
+    fontFamily:     "StarNews",
     contentOnly:    false,
     pageOrientation: "portrait",
     fixRtl:        false,
     removeFixed:   false,
     printBackground: false,
     forceReload:   false,
+    pageNumbers:   false,
+    pageNumbersPosition: "footer",
+    watermark:     "none",
+    watermarkText:  "",
+    watermarkColor: "#000000",
+    watermarkOpacity: "0.1",
   };
 
   /* ── এলিমেন্ট সরানো ── */
   function removeElements() {
-    [HEADER_ID, FOOTER_ID, STYLE_ID, FONT_ID].forEach(id => {
+    [HEADER_ID, FOOTER_ID, STYLE_ID, FONT_ID, "__cphf_page_num__", "__cphf_watermark__"].forEach(id => {
       document.getElementById(id)?.remove();
     });
   }
@@ -104,11 +111,15 @@
     /* ── ২. প্রিন্ট CSS ── */
     const usedFont = `'StarNews', '${s.fontFamily || "Arial"}', sans-serif`;
     const isLandscape = s.pageOrientation === "landscape";
+    const logoSize = parseInt(s.logoSize) || 58;
+    const watermarkOpacity = parseFloat(s.watermarkOpacity) || 0.1;
+    const watermarkText = s.watermark === "custom" ? s.watermarkText : s.watermark;
+    const wmColor = s.watermarkColor || "#000000";
 
     const style = document.createElement("style");
     style.id    = STYLE_ID;
     style.textContent = `
-      #${HEADER_ID}, #${FOOTER_ID} { display: none !important; }
+      #${HEADER_ID}, #${FOOTER_ID}, #__cphf_page_num__, #__cphf_watermark__ { display: none !important; }
 
       @media print {
         @page {
@@ -141,7 +152,7 @@
           .search-box, .search-form, .search-bar,
           main, .main, .content, .main-content, #content,
           .page-content, .article-content, .post-content,
-          body > *:not(main):not(.${HEADER_ID.substring(2)}):not(.${FOOTER_ID.substring(2)}) {
+          body > *:not(main):not(.${HEADER_ID.substring(2)}):not(.${FOOTER_ID.substring(2)}):not(#__cphf_page_num__):not(#__cphf_watermark__) {
             display: none !important;
           }
         ` : ""}
@@ -155,7 +166,6 @@
           [class*="fixed"], [id*="fixed"] {
             position: absolute !important;
           }
-          /* সাধারণ fixed এলিমেন্ট */
           header, nav, .navbar, .header, .topbar, .toolbar {
             position: relative !important;
           }
@@ -175,6 +185,40 @@
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
+          }
+        ` : ""}
+
+        /* ──── ৫. ওয়াটারমার্ক ──── */
+        ${s.watermark !== "none" && watermarkText ? `
+          #__cphf_watermark__ {
+            display: block !important;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 100px;
+            font-weight: bold;
+            font-family: ${usedFont};
+            color: ${wmColor};
+            opacity: ${watermarkOpacity};
+            pointer-events: none;
+            z-index: 999999;
+            white-space: nowrap;
+            text-transform: uppercase;
+          }
+        ` : ""}
+
+        /* ──── ৬. পেজ নম্বর ──── */
+        ${s.pageNumbers ? `
+          #__cphf_page_num__ {
+            display: block !important;
+            position: fixed;
+            ${s.pageNumbersPosition === "header" ? "top: 8px;" : "bottom: 8px;"}
+            right: 15mm;
+            font-family: ${usedFont};
+            font-size: ${fs}px;
+            color: ${s.textColor || "#000"};
+            z-index: 2147483646;
           }
         ` : ""}
 
@@ -201,7 +245,7 @@
         }
 
         ${!svgHeader ? `
-          #${HEADER_ID} .cphf-logo  { height: 58px; width: auto; object-fit: contain; flex-shrink: 0; }
+          #${HEADER_ID} .cphf-logo  { height: ${logoSize}px; width: auto; object-fit: contain; flex-shrink: 0; }
           #${HEADER_ID} .cphf-div   { width: 2px; height: 54px; background: ${s.borderColor || "#2563eb"}; opacity: .4; flex-shrink: 0; }
           #${HEADER_ID} .cphf-info  { flex: 1; font-family: ${usedFont}; }
           #${HEADER_ID} .cphf-name  { font-family: ${usedFont}; font-size: ${fs + 4}px; font-weight: 700; margin: 0 0 2px; }
@@ -284,6 +328,23 @@
         footer.innerHTML = `<span>${left}</span><span>${center}</span><span>${right}</span>`;
       }
       document.body.appendChild(footer);
+    }
+
+    /* ── ৭. পেজ নম্বর এলিমেন্ট ── */
+    if (s.pageNumbers) {
+      const pageNum = document.createElement("div");
+      pageNum.id = "__cphf_page_num__";
+      pageNum.textContent = `পেজ নম্বর`;
+      document.body.appendChild(pageNum);
+    }
+
+    /* ── ৮. ওয়াটারমার্ক এলিমেন্ট ── */
+    const wmText = s.watermark === "custom" ? s.watermarkText : s.watermark;
+    if (s.watermark !== "none" && wmText) {
+      const watermark = document.createElement("div");
+      watermark.id = "__cphf_watermark__";
+      watermark.textContent = wmText;
+      document.body.appendChild(watermark);
     }
   }
 

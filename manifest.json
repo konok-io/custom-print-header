@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
   "name": "বিন মিশাল প্রিন্ট লেআউট",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "যেকোনো ওয়েবপেজ প্রিন্টে কাস্টম হেডার ও ফুটার — বাংলা ফন্ট সহ। Developed by konok.io",
   "author": "konok.io",
   "homepage_url": "https://www.konok.io",
-  "permissions": ["storage"],
+  "permissions": ["storage", "scripting", "activeTab"],
   "host_permissions": ["<all_urls>"],
   "action": {
     "default_popup": "popup.html",
