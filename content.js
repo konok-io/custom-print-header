@@ -31,6 +31,11 @@
     fontSize:       "12",
     fontFamily:     "StarNews",   /* বাংলা ফন্ট ডিফল্ট */
     contentOnly:    false,
+    pageOrientation: "portrait",
+    fixRtl:        false,
+    removeFixed:   false,
+    printBackground: false,
+    forceReload:   false,
   };
 
   /* ── এলিমেন্ট সরানো ── */
@@ -98,6 +103,7 @@
 
     /* ── ২. প্রিন্ট CSS ── */
     const usedFont = `'StarNews', '${s.fontFamily || "Arial"}', sans-serif`;
+    const isLandscape = s.pageOrientation === "landscape";
 
     const style = document.createElement("style");
     style.id    = STYLE_ID;
@@ -106,66 +112,69 @@
 
       @media print {
         @page {
-          size: A4 portrait;
+          size: A4 ${s.pageOrientation || "portrait"};
           margin-top:    ${hMargin};
           margin-bottom: ${fMargin};
           margin-left:   15mm;
           margin-right:  15mm;
         }
 
-        /* ──── কন্টেন্ট-অনলি মোড ──── */
+        /* ──── ১. নেভিগেশন/সাইডবার লুকান ──── */
         ${s.contentOnly ? `
-          /* নেভিগেশন লুকান */
           nav, .navbar, .nav, .navigation, .header-nav, .top-nav,
           header nav, .main-nav, .site-nav, [role="navigation"],
-          .menu, .sidebar-menu, .nav-menu, .topbar, .navbar-header {
-            display: none !important;
-          }
-
-          /* সাইডবার লুকান */
+          .menu, .sidebar-menu, .nav-menu, .topbar, .navbar-header,
           aside, .sidebar, .side-bar, .left-sidebar, .right-sidebar,
           .sidebar-left, .sidebar-right, .aside, [role="complementary"],
-          .menu-sidebar, .nav-sidebar, .widget-area, .secondary {
-            display: none !important;
-          }
-
-          /* মূল পেজ হেডার লুকান */
+          .menu-sidebar, .nav-sidebar, .widget-area, .secondary,
           .page-header, .site-header, .header, .top-header,
-          #header, .header-area, .page-title-bar, .title-bar {
-            display: none !important;
-          }
-
-          /* ফুটার ও কপিরাইট লুকান */
+          #header, .header-area, .page-title-bar, .title-bar,
           footer, .footer, .site-footer, #footer, .page-footer,
-          .footer-area, .copyright, .site-info, .footer-content {
-            display: none !important;
-          }
-
-          /* বিজ্ঞাপন ও প্রমোশন লুকান */
+          .footer-area, .copyright, .site-info, .footer-content,
           .advertisement, .ad, .ads, .promo, .promotion,
           .banner, .sponsor, [class*="ad-"], [class*="ads-"],
-          .advert, .promotional, .promo-banner {
-            display: none !important;
-          }
-
-          /* সোশ্যাল ও শেয়ার বাটন লুকান */
+          .advert, .promotional, .promo-banner,
           .social, .share, .sharing, .social-share,
-          .social-links, .share-buttons, [class*="share-"] {
-            display: none !important;
-          }
-
-          /* এক্সট্রা ইউআই লুকান */
+          .social-links, .share-buttons, [class*="share-"],
           .breadcrumb, .breadcrumbs, .pagination, .pager,
           .toolbar, .action-bar, .controls, .filters,
-          .search-box, .search-form, .search-bar {
-            display: none !important;
-          }
-
-          /* মূল কন্টেন্ট শুধু দেখান */
+          .search-box, .search-form, .search-bar,
           main, .main, .content, .main-content, #content,
           .page-content, .article-content, .post-content,
           body > *:not(main):not(.${HEADER_ID.substring(2)}):not(.${FOOTER_ID.substring(2)}) {
-            max-width: 100% !important;
+            display: none !important;
+          }
+        ` : ""}
+
+        /* ──── ২. Fixed এলিমেন্ট সরান ──── */
+        ${s.removeFixed ? `
+          * {
+            position: relative !important;
+          }
+          [style*="position: fixed"], [style*="position:fixed"],
+          [class*="fixed"], [id*="fixed"] {
+            position: absolute !important;
+          }
+          /* সাধারণ fixed এলিমেন্ট */
+          header, nav, .navbar, .header, .topbar, .toolbar {
+            position: relative !important;
+          }
+        ` : ""}
+
+        /* ──── ৩. RTL ঠিক করুন ──── */
+        ${s.fixRtl ? `
+          body, html { direction: ltr !important; }
+          * { text-align: left !important; unicode-bidi: plaintext !important; }
+          table { direction: ltr !important; }
+          td, th { direction: ltr !important; text-align: left !important; }
+        ` : ""}
+
+        /* ──── ৪. ব্যাকগ্রাউন্ড প্রিন্ট ──── */
+        ${s.printBackground ? `
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
           }
         ` : ""}
 
@@ -284,6 +293,39 @@
       injectElements(Object.assign({}, DEFAULTS, result.printSettings || {}));
     });
   }
+
+  /* ── ৫. JS কন্টেন্ট রিফ্রেশ ── */
+  function handlePrintBeforePrint(s) {
+    if (!s.forceReload) return;
+    
+    // ASP.NET pages need content refresh before print
+    const hasPostBack = document.querySelector('form') && 
+                        (document.querySelector('input[name*="__EVENTTARGET"]') || 
+                         document.querySelector('input[name*="__VIEWSTATE"]'));
+    
+    if (hasPostBack) {
+      // Re-trigger any visible content updates
+      window.scrollTo(0, 0);
+      // Small delay to let any lazy-loaded content render
+      setTimeout(() => {
+        // Trigger any visible update handlers
+        document.querySelectorAll('[onclick*="doPostBack"], .aspNetHidden input').forEach(el => {
+          // Just update the viewport, don't actually post
+        });
+      }, 100);
+    }
+  }
+
+  // Listen for beforeprint event
+  window.addEventListener('beforeprint', () => {
+    chrome.storage.local.get("printSettings", result => {
+      const s = Object.assign({}, DEFAULTS, result.printSettings || {});
+      handlePrintBeforePrint(s);
+      
+      // Re-inject to ensure CSS is applied
+      injectElements(s);
+    });
+  });
 
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "local" && changes.printSettings) {

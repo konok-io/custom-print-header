@@ -25,6 +25,11 @@ const DEFAULTS = {
   fontSize: "12",
   fontFamily: "Arial",
   contentOnly: false,
+  pageOrientation: "portrait", // portrait | landscape
+  fixRtl: false,
+  removeFixed: false,
+  printBackground: false,
+  forceReload: false,
 };
 
 const THEMES = {
@@ -58,7 +63,11 @@ document.querySelectorAll(".tab").forEach(tab => {
 /* ── Mode selector (ফিল্ড / SVG) ── */
 function setMode(target, mode) {
   // update hidden input
-  $(`${target}Mode`).value = mode;
+  if (target === "header" || target === "footer") {
+    $(`${target}Mode`).value = mode;
+  } else if (target === "orientation") {
+    $("pageOrientation").value = mode;
+  }
 
   // update buttons
   document.querySelectorAll(`.mode-btn[data-target="${target}"]`).forEach(btn => {
@@ -69,7 +78,7 @@ function setMode(target, mode) {
   if (target === "header") {
     $("headerFieldsSection").style.display = mode === "fields" ? "block" : "none";
     $("headerSvgSection").style.display    = mode === "svg"    ? "block" : "none";
-  } else {
+  } else if (target === "footer") {
     $("footerFieldsSection").style.display = mode === "fields" ? "block" : "none";
     $("footerSvgSection").style.display    = mode === "svg"    ? "block" : "none";
   }
@@ -241,6 +250,11 @@ function populateForm(s) {
   setChk("headerEnabled", s.headerEnabled);
   setChk("footerEnabled", s.footerEnabled);
   setChk("contentOnly", s.contentOnly);
+  setChk("fixRtl", s.fixRtl);
+  setChk("removeFixed", s.removeFixed);
+  setChk("printBackground", s.printBackground);
+  setChk("forceReload", s.forceReload);
+  setMode("orientation", s.pageOrientation || "portrait");
   setVal("companyName",  s.companyName);
   setVal("tagline",      s.tagline);
   setVal("address",      s.address);
@@ -290,6 +304,11 @@ function getSettings() {
     headerEnabled: chk("headerEnabled"),
     footerEnabled: chk("footerEnabled"),
     contentOnly:    chk("contentOnly"),
+    pageOrientation: val("pageOrientation", "portrait"),
+    fixRtl:        chk("fixRtl"),
+    removeFixed:   chk("removeFixed"),
+    printBackground: chk("printBackground"),
+    forceReload:   chk("forceReload"),
     headerMode:    val("headerMode", "fields"),
     footerMode:    val("footerMode", "fields"),
     headerSvg:     savedHeaderSvg,

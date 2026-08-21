@@ -335,6 +335,57 @@
     <p class="hint">নেভিগেশন, সাইডবার, হেডার ও ফুটার লুকিয়ে শুধু মূল কন্টেন্ট প্রিন্ট হবে।</p>
   </div>
 
+  <!-- Print Fixes -->
+  <div class="card">
+    <div class="card-title">🛠️ প্রিন্ট সমস্যা সমাধান</div>
+    
+    <!-- Page Orientation -->
+    <div class="form-row">
+      <label>📄 পেজ অরিয়েন্টেশন</label>
+      <div class="mode-row">
+        <button class="mode-btn active" data-mode="portrait" data-target="orientation" id="portraitBtn">📋 Portrait</button>
+        <button class="mode-btn" data-mode="landscape" data-target="orientation" id="landscapeBtn">📄 Landscape</button>
+      </div>
+      <input type="hidden" id="pageOrientation" value="portrait">
+    </div>
+
+    <div class="sub-toggle-row">
+      <span>🔄 RTL লেআউট ঠিক করুন</span>
+      <label class="switch switch-sm">
+        <input type="checkbox" id="fixRtl">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <p class="hint" style="margin-top:-5px;margin-bottom:12px">আরবি/RTL সাইটে টেক্সট ও কলাম সঠিকভাবে প্রিন্ট হবে।</p>
+
+    <div class="sub-toggle-row">
+      <span>📌 Fixed এলিমেন্ট সরান</span>
+      <label class="switch switch-sm">
+        <input type="checkbox" id="removeFixed">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <p class="hint" style="margin-top:-5px;margin-bottom:12px">নেভিগেশন বার কন্টেন্টের উপর পড়বে না।</p>
+
+    <div class="sub-toggle-row">
+      <span>🎨 ব্যাকগ্রাউন্ড রঙ প্রিন্ট করুন</span>
+      <label class="switch switch-sm">
+        <input type="checkbox" id="printBackground">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <p class="hint" style="margin-top:-5px;margin-bottom:12px">Chrome-এর "Background graphics" অপশন অটো অন করে।</p>
+
+    <div class="sub-toggle-row">
+      <span>⏱️ JS কন্টেন্ট রিফ্রেশ</span>
+      <label class="switch switch-sm">
+        <input type="checkbox" id="forceReload">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <p class="hint" style="margin-top:-5px">ASP.NET/Javascript দিয়ে লোড হওয়া কন্টেন্ট প্রিন্টের আগে রিফ্রেশ হবে।</p>
+  </div>
+
   <!-- Font preview -->
   <div class="card">
     <div class="card-title">বাংলা ফন্ট</div>
