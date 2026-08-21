@@ -237,12 +237,24 @@
           }
         ` : ""}
 
-        /* ──── ৩. RTL ওয়েবসাইট - শুধু প্রিন্ট সমস্যা সমাধান ──── */
+        /* ──── ৩. সব ওয়েবসাইটে LTR ফোর্স ──── */
         ${s.fixRtl ? `
           /* Chrome সামঞ্জস্যতা */
           * { box-sizing: border-box !important; }
           
-          /* প্রিন্টে RTL মার্জিন সমস্যা সমাধান */
+          /* সব RTL এলিমেন্ট LTR করা */
+          html[dir="rtl"], body[dir="rtl"], [dir="rtl"] {
+            direction: ltr !important;
+            text-align: left !important;
+          }
+          
+          /* RTL ক্লাস থাকলেও LTR */
+          .rtl, [class*="rtl"], [class*="right"], [class*="arabic"] {
+            direction: ltr !important;
+            text-align: left !important;
+          }
+          
+          /* প্রিন্টে মার্জিন ঠিক করা */
           html[dir="rtl"], body[dir="rtl"] {
             margin-right: 0 !important;
             padding-right: 0 !important;
