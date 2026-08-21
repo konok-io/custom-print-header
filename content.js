@@ -178,6 +178,34 @@
         }
       }
 
+      /* ──── ০. ওয়েবসাইটের মূল হেডার/ফুটার লুকান (সবসময়) ──── */
+      /* ওয়েবসাইটের নিজস্ব হেডার/ফুটার প্রিন্টে দেখাবে না */
+      @media print {
+        /* মূল হেডার এলিমেন্ট */
+        header, .header, .site-header, .page-header, .main-header,
+        .top-header, #header, .header-area, .header-wrap,
+        .page-title-bar, .title-bar, .site-branding,
+        nav, .navbar, .nav, .navigation, .main-nav, .top-nav,
+        .navbar-collapse, .navbar-default, .navbar-fixed-top,
+        
+        /* মূল ফুটার এলিমেন্ট */
+        footer, .footer, .site-footer, .page-footer, #footer,
+        .footer-area, .footer-wrap, .copyright, .site-info,
+        .footer-content, .footer-section,
+        
+        /* হেডার/ফুটার সদৃশ */
+        [role="banner"], [role="contentinfo"],
+        .header-wrapper, .footer-wrapper,
+        .site-header-wrap, .site-footer-wrap,
+        .page-header-wrap, .page-footer-wrap {
+          display: none !important;
+          visibility: hidden !important;
+          height: 0 !important;
+          max-height: 0 !important;
+          overflow: hidden !important;
+        }
+      }
+
       /* ──── ১. শুধু নেভিগেশন/বিজ্ঞাপন লুকান ──── */
         ${s.contentOnly ? `
           /* শুধু বিজ্ঞাপন ও নোটিফিকেশন */
