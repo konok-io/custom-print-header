@@ -262,42 +262,70 @@
 
         @page {
           size: A4 ${s.pageOrientation || "portrait"};
-          margin-top:    ${hMargin};
-          margin-bottom: ${fMargin};
-          margin-left:   15mm;
-          margin-right:  15mm;
+          margin: 0 !important;
         }
 
-        /* Chrome সামঞ্জস্যতা - লেআউট সংরক্ষণ */
-        html {
-          min-width: auto !important;
-          max-width: none !important;
-          overflow: visible !important;
-        }
-        
-        body {
-          /* ওয়েবসাইটের নিজস্ব মার্জিন/প্যাডিং রাখুন */
-          margin: inherit !important;
-          padding: inherit !important;
-          min-width: auto !important;
-          max-width: none !important;
+        /* PC লেআউট ফোর্স করা - মোবাইল ভার্সন বন্ধ */
+        html, body {
           width: 100% !important;
+          min-width: 1024px !important;
+          max-width: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
           overflow: visible !important;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
         }
 
-        /* কন্টেইনার এলিমেন্ট প্রস্থ সংরক্ষণ */
-        div, section, article, main, aside, form, fieldset {
+        /* সব কন্টেইনার PC সাইজে লক করা */
+        .container, .container-fluid, .container-sm, .container-md, .container-lg, .container-xl,
+        .wrapper, .wrapper-fluid, .main-wrapper, .page-wrapper, .content-wrapper,
+        #wrapper, #main-wrapper, #content-wrapper, #page-wrapper,
+        .row, .col-*, .col, [class*="col-"], [class*="span"], [class*="grid"],
+        div, section, article, main, aside, form, fieldset, ul, ol, table {
           max-width: none !important;
+          width: auto !important;
+          flex-basis: auto !important;
+          flex-grow: 0 !important;
           box-sizing: border-box !important;
         }
 
-        /* Chrome-এ ইনপুট ও টেবিল সঠিক সাইজ */
-        input, select, textarea, table, td, th {
-          max-width: none !important;
+        /* টেবিল ফিক্সড লেআউট */
+        table {
+          table-layout: auto !important;
+        }
+        td, th {
           width: auto !important;
           min-width: 0 !important;
+          max-width: none !important;
+        }
+
+        /* মোবাইল হাইডেন এলিমেন্ট শো করা */
+        .hidden-xs, .hidden-sm, .hidden-md, .hidden-lg, .hidden-print,
+        [class*="hidden-"], [class*="d-none"], .d-print-block {
+          display: block !important;
+          visibility: visible !important;
+        }
+
+        /* মোবাইল মেনু ও নেভিগেশন লুকান */
+        .navbar-toggle, .hamburger, .menu-toggle, .mobile-menu, .nav-toggle,
+        .offcanvas, .sidebar-toggle, [class*="mobile-nav"], [class*="drawer"] {
+          display: none !important;
+        }
+
+        /* ইনপুট/বাটন সাইজ */
+        input, select, textarea, button, .btn, [class*="btn-"] {
+          width: auto !important;
+          min-width: 0 !important;
+          max-width: none !important;
+        }
+
+        /* Chrome সামঞ্জস্যতা */
+        html {
+          overflow: visible !important;
+        }
+        body {
+          overflow: visible !important;
         }
       }
 
