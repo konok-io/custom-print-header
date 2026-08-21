@@ -28,7 +28,7 @@
     bgColor:        "#ffffff",
     textColor:      "#000000",
     borderColor:    "#2563eb",
-    fontSize:       "12",
+    fontSize:       "14",
     fontFamily:     "StarNews",   /* বাংলা ফন্ট ডিফল্ট */
     contentOnly:    false,
     pageOrientation: "portrait",
