@@ -145,26 +145,27 @@
           margin-right:  15mm;
         }
 
-        /* Chrome সামঞ্জস্যতা - পূর্ণাঙ্গ লেআউট */
+        /* Chrome সামঞ্জস্যতা - লেআউট সংরক্ষণ */
         html {
-          min-width: 100% !important;
+          min-width: auto !important;
           max-width: none !important;
           overflow: visible !important;
         }
         
         body {
-          margin: 0 !important;
-          padding: 0 !important;
-          min-width: 100% !important;
+          /* ওয়েবসাইটের নিজস্ব মার্জিন/প্যাডিং রাখুন */
+          margin: inherit !important;
+          padding: inherit !important;
+          min-width: auto !important;
           max-width: none !important;
-          width: auto !important;
+          width: 100% !important;
           overflow: visible !important;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
         }
 
-        /* সব এলিমেন্টের প্রস্থ */
-        * {
+        /* কন্টেইনার এলিমেন্ট প্রস্থ সংরক্ষণ */
+        div, section, article, main, aside, form, fieldset {
           max-width: none !important;
           box-sizing: border-box !important;
         }
@@ -175,14 +176,9 @@
           width: auto !important;
           min-width: 0 !important;
         }
+      }
 
-        /* RTL ওয়েবসাইটের জন্য */
-        html[dir="rtl"] body, body[dir="rtl"] {
-          margin-right: 0 !important;
-          padding-right: 0 !important;
-        }
-
-        /* ──── ১. শুধু নেভিগেশন/বিজ্ঞাপন লুকান ──── */
+      /* ──── ১. শুধু নেভিগেশন/বিজ্ঞাপন লুকান ──── */
         ${s.contentOnly ? `
           /* শুধু বিজ্ঞাপন ও নোটিফিকেশন */
           .advertisement, .ad, .ads, .promo, .promotion, .advert, .promotional,
