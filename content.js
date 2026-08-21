@@ -490,28 +490,71 @@
           }
         ` : ""}
 
-        /* ──── হেডার (শুধু প্রিন্টে দে�খাবে) ──── */
+        /* ──── হেডার (শুধু প্রিন্টে দেখাবে) ──── */
         #${HEADER_ID} {
           display: none !important;
           ${svgHeader ? "padding: 0;" : `
-            color: ${s.textColor || "#000"};
-            padding: 10px 15px;
-            display: flex !important;
-            align-items: center;
-            gap: 15px;
             font-family: ${usedFont};
             font-size: ${fs}px;
           `}
         }
 
         ${!svgHeader ? `
-          #${HEADER_ID} .cphf-logo  { height: ${logoSize}px; width: auto; max-height: ${logoSize}px; object-fit: contain; flex-shrink: 0; }
-          #${HEADER_ID} .cphf-div   { width: 3px; height: ${logoSize - 10}px; background: ${s.borderColor || "#2563eb"}; opacity: .5; flex-shrink: 0; border-radius: 2px; }
-          #${HEADER_ID} .cphf-info  { flex: 1; min-width: 0; font-family: ${usedFont}; direction: ltr !important; }
-          #${HEADER_ID} .cphf-name  { font-family: ${usedFont}; font-size: ${fs + 5}px; font-weight: 700; margin: 0 0 3px; direction: ltr !important; color: ${s.textColor || "#1e293b"}; }
-          #${HEADER_ID} .cphf-tag   { font-family: ${usedFont}; font-size: ${fs}px; margin: 0 0 2px; color: ${s.textColor || "#64748b"}; direction: ltr !important; }
-          #${HEADER_ID} .cphf-det   { font-family: ${usedFont}; font-size: ${fs - 1}px; margin: 0; color: ${s.textColor || "#94a3b8"}; direction: ltr !important; }
-          #${HEADER_ID} .cphf-det span { margin-right: 8px; }
+          /* হেডার মূল কন্টেইনার */
+          #${HEADER_ID} .cphf-header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 15px;
+          }
+          /* লোগো */
+          #${HEADER_ID} .cphf-logo-wrap {
+            flex-shrink: 0;
+          }
+          #${HEADER_ID} .cphf-logo {
+            height: ${logoSize}px;
+            width: auto;
+            max-height: ${logoSize}px;
+            object-fit: contain;
+          }
+          /* প্রতিষ্ঠানের তথ্য */
+          #${HEADER_ID} .cphf-company-info {
+            flex: 1;
+            direction: ltr !important;
+          }
+          #${HEADER_ID} .cphf-name {
+            font-family: ${usedFont};
+            font-size: ${fs + 6}px;
+            font-weight: 700;
+            margin: 0;
+            padding: 0;
+            color: ${s.textColor || "#1e293b"};
+            direction: ltr !important;
+          }
+          #${HEADER_ID} .cphf-tag {
+            font-family: ${usedFont};
+            font-size: ${fs}px;
+            margin: 2px 0 0;
+            color: ${s.textColor || "#64748b"};
+            direction: ltr !important;
+          }
+          /* কন্টাক্ট রো এবং ডিভাইডার লাইন */
+          #${HEADER_ID} .cphf-contact-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px 15px;
+            padding: 8px 15px;
+            border-top: 2px solid ${s.borderColor || "#2563eb"};
+            background: #f8fafc;
+            direction: ltr !important;
+          }
+          #${HEADER_ID} .cphf-contact-item {
+            font-family: ${usedFont};
+            font-size: ${fs - 1}px;
+            color: ${s.textColor || "#475569"};
+            direction: ltr !important;
+            white-space: nowrap;
+          }
         ` : `#${HEADER_ID} svg { width: 100%; height: auto; display: block; }`}
 
         /* ──── ফুটার (শুধু প্রিন্টে দেখাবে) ──── */
@@ -583,20 +626,29 @@
         header.innerHTML = s.headerSvg;
         normalizeSvg(header);
       } else {
-        let html = "";
+        let html = '<div class="cphf-header-content">';
+        
+        // Left: Logo
         if (s.logoData) {
-          html += `<img class="cphf-logo" src="${s.logoData}" alt="logo"><div class="cphf-div"></div>`;
+          html += `<div class="cphf-logo-wrap"><img class="cphf-logo" src="${s.logoData}" alt="logo"></div>`;
         }
-        let info = "";
-        if (s.companyName) info += `<p class="cphf-name">${s.companyName}</p>`;
-        if (s.tagline)     info += `<p class="cphf-tag">${s.tagline}</p>`;
-        const d = [];
-        if (s.address) d.push(`📍 ${s.address}`);
-        if (s.phone)   d.push(`☎ ${s.phone}`);
-        if (s.email)   d.push(`✉ ${s.email}`);
-        if (s.website) d.push(`🌐 ${s.website}`);
-        if (d.length)  info += `<p class="cphf-det">${d.join(" <span>|</span> ")}</p>`;
-        if (info)      html += `<div class="cphf-info">${info}</div>`;
+        
+        // Right: Company info
+        html += '<div class="cphf-company-info">';
+        if (s.companyName) html += `<h1 class="cphf-name">${s.companyName}</h1>`;
+        if (s.tagline)     html += `<p class="cphf-tag">${s.tagline}</p>`;
+        html += '</div>';
+        
+        html += '</div>'; // end header-content
+        
+        // Bottom: Contact details
+        html += '<div class="cphf-contact-row">';
+        if (s.address) html += `<span class="cphf-contact-item">📍 ${s.address}</span>`;
+        if (s.phone)   html += `<span class="cphf-contact-item">☎ ${s.phone}</span>`;
+        if (s.email)   html += `<span class="cphf-contact-item">✉ ${s.email}</span>`;
+        if (s.website) html += `<span class="cphf-contact-item">🌐 ${s.website}</span>`;
+        html += '</div>';
+        
         header.innerHTML = html;
       }
       document.body.appendChild(header);
