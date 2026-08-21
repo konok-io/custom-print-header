@@ -490,37 +490,36 @@
           }
         ` : ""}
 
-        /* ──── হেডার (শুধু প্রিন্টে দেখাবে) ──── */
+        /* ──── হেডার (শুধু প্রিন্টে দে�খাবে) ──── */
         #${HEADER_ID} {
           display: none !important;
           ${svgHeader ? "padding: 0;" : `
             color: ${s.textColor || "#000"};
-            border-bottom: 2.5px solid ${s.borderColor || "#2563eb"};
-            padding: 8px 20px;
+            padding: 10px 15px;
             display: flex !important;
             align-items: center;
-            gap: 14px;
+            gap: 15px;
             font-family: ${usedFont};
             font-size: ${fs}px;
           `}
         }
 
         ${!svgHeader ? `
-          #${HEADER_ID} .cphf-logo  { height: ${logoSize}px; width: auto; object-fit: contain; flex-shrink: 0; }
-          #${HEADER_ID} .cphf-div   { width: 2px; height: 54px; background: ${s.borderColor || "#2563eb"}; opacity: .4; flex-shrink: 0; }
+          #${HEADER_ID} .cphf-logo  { height: ${logoSize}px; width: auto; max-height: ${logoSize}px; object-fit: contain; flex-shrink: 0; }
+          #${HEADER_ID} .cphf-div   { width: 3px; height: ${logoSize - 10}px; background: ${s.borderColor || "#2563eb"}; opacity: .5; flex-shrink: 0; border-radius: 2px; }
           #${HEADER_ID} .cphf-info  { flex: 1; min-width: 0; font-family: ${usedFont}; direction: ltr !important; }
-          #${HEADER_ID} .cphf-name  { font-family: ${usedFont}; font-size: ${fs + 4}px; font-weight: 700; margin: 0 0 2px; direction: ltr !important; }
-          #${HEADER_ID} .cphf-tag   { font-family: ${usedFont}; font-size: ${fs}px; margin: 0 0 3px; opacity: .78; direction: ltr !important; }
-          #${HEADER_ID} .cphf-det   { font-family: ${usedFont}; font-size: ${fs - 1}px; margin: 0; opacity: .7; direction: ltr !important; }
+          #${HEADER_ID} .cphf-name  { font-family: ${usedFont}; font-size: ${fs + 5}px; font-weight: 700; margin: 0 0 3px; direction: ltr !important; color: ${s.textColor || "#1e293b"}; }
+          #${HEADER_ID} .cphf-tag   { font-family: ${usedFont}; font-size: ${fs}px; margin: 0 0 2px; color: ${s.textColor || "#64748b"}; direction: ltr !important; }
+          #${HEADER_ID} .cphf-det   { font-family: ${usedFont}; font-size: ${fs - 1}px; margin: 0; color: ${s.textColor || "#94a3b8"}; direction: ltr !important; }
+          #${HEADER_ID} .cphf-det span { margin-right: 8px; }
         ` : `#${HEADER_ID} svg { width: 100%; height: auto; display: block; }`}
 
         /* ──── ফুটার (শুধু প্রিন্টে দেখাবে) ──── */
         #${FOOTER_ID} {
           display: none !important;
           ${svgFooter ? "padding: 0;" : `
-            color: ${s.textColor || "#555"};
-            border-top: 1.5px solid ${s.borderColor || "#2563eb"};
-            padding: 5px 20px;
+            color: ${s.textColor || "#64748b"};
+            padding: 8px 15px;
             display: flex !important;
             justify-content: space-between;
             align-items: center;
@@ -529,7 +528,12 @@
           `}
         }
 
-        ${!svgFooter ? `#${FOOTER_ID} span { max-width: 33%; word-break: break-word; font-family: ${usedFont}; direction: ltr !important; }` : `#${FOOTER_ID} svg { width: 100%; height: auto; display: block; }`}
+        ${!svgFooter ? `
+          #${FOOTER_ID} .cphf-footer-left   { flex: 1; text-align: left; max-width: 40%; direction: ltr !important; }
+          #${FOOTER_ID} .cphf-footer-center { flex: 1; text-align: center; direction: ltr !important; }
+          #${FOOTER_ID} .cphf-footer-right  { flex: 1; text-align: right; max-width: 40%; direction: ltr !important; }
+          #${FOOTER_ID} span { max-width: 100%; word-break: break-word; font-family: ${usedFont}; }
+        ` : `#${FOOTER_ID} svg { width: 100%; height: auto; display: block; }`}
 
         /* ──── প্রিন্টে হেডার/ফুটার দেখাবে ──── */
         @media print {
@@ -581,17 +585,17 @@
       } else {
         let html = "";
         if (s.logoData) {
-          html += `<img class="cphf-logo" src="${s.logoData}" alt=""><div class="cphf-div"></div>`;
+          html += `<img class="cphf-logo" src="${s.logoData}" alt="logo"><div class="cphf-div"></div>`;
         }
         let info = "";
         if (s.companyName) info += `<p class="cphf-name">${s.companyName}</p>`;
         if (s.tagline)     info += `<p class="cphf-tag">${s.tagline}</p>`;
         const d = [];
-        if (s.address) d.push(s.address);
+        if (s.address) d.push(`📍 ${s.address}`);
         if (s.phone)   d.push(`☎ ${s.phone}`);
         if (s.email)   d.push(`✉ ${s.email}`);
         if (s.website) d.push(`🌐 ${s.website}`);
-        if (d.length)  info += `<p class="cphf-det">${d.join(" &nbsp;|&nbsp; ")}</p>`;
+        if (d.length)  info += `<p class="cphf-det">${d.join(" <span>|</span> ")}</p>`;
         if (info)      html += `<div class="cphf-info">${info}</div>`;
         header.innerHTML = html;
       }
@@ -615,7 +619,11 @@
             { year: "numeric", month: "long", day: "numeric" });
           right = right ? `${right} | ${d}` : d;
         }
-        footer.innerHTML = `<span>${left}</span><span>${center}</span><span>${right}</span>`;
+        footer.innerHTML = `
+          <span class="cphf-footer-left">${left}</span>
+          <span class="cphf-footer-center">${center}</span>
+          <span class="cphf-footer-right">${right}</span>
+        `;
       }
       document.body.appendChild(footer);
     }
