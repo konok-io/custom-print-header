@@ -323,16 +323,20 @@
           }
         ` : ""}
 
-        /* ──── হেডার ──── */
+        /* ──── হেডার (পূর্ণ প্রস্থ) ──── */
         #${HEADER_ID} {
           display: ${hShow ? "block" : "none"} !important;
           position: fixed;
           top: 0; left: 0; right: 0;
+          width: 100% !important;
+          min-width: 100% !important;
+          max-width: 100% !important;
           z-index: 2147483647;
           background: ${s.bgColor || "#fff"};
-          box-sizing: border-box;
+          box-sizing: border-box !important;
           -webkit-print-color-adjust: exact;
           print-color-adjust: exact;
+          overflow: visible !important;
           ${svgHeader ? "padding: 0;" : `
             color: ${s.textColor || "#000"};
             border-bottom: 2.5px solid ${s.borderColor || "#2563eb"};
@@ -348,22 +352,26 @@
         ${!svgHeader ? `
           #${HEADER_ID} .cphf-logo  { height: ${logoSize}px; width: auto; object-fit: contain; flex-shrink: 0; }
           #${HEADER_ID} .cphf-div   { width: 2px; height: 54px; background: ${s.borderColor || "#2563eb"}; opacity: .4; flex-shrink: 0; }
-          #${HEADER_ID} .cphf-info  { flex: 1; font-family: ${usedFont}; }
+          #${HEADER_ID} .cphf-info  { flex: 1; min-width: 0; font-family: ${usedFont}; }
           #${HEADER_ID} .cphf-name  { font-family: ${usedFont}; font-size: ${fs + 4}px; font-weight: 700; margin: 0 0 2px; }
           #${HEADER_ID} .cphf-tag   { font-family: ${usedFont}; font-size: ${fs}px; margin: 0 0 3px; opacity: .78; }
           #${HEADER_ID} .cphf-det   { font-family: ${usedFont}; font-size: ${fs - 1}px; margin: 0; opacity: .7; }
         ` : `#${HEADER_ID} svg { width: 100%; height: auto; display: block; }`}
 
-        /* ──── ফুটার ──── */
+        /* ──── ফুটার (পূর্ণ প্রস্থ) ──── */
         #${FOOTER_ID} {
           display: ${fShow ? "block" : "none"} !important;
           position: fixed;
           bottom: 0; left: 0; right: 0;
+          width: 100% !important;
+          min-width: 100% !important;
+          max-width: 100% !important;
           z-index: 2147483647;
           background: ${s.bgColor || "#fff"};
-          box-sizing: border-box;
+          box-sizing: border-box !important;
           -webkit-print-color-adjust: exact;
           print-color-adjust: exact;
+          overflow: visible !important;
           ${svgFooter ? "padding: 0;" : `
             color: ${s.textColor || "#555"};
             border-top: 1.5px solid ${s.borderColor || "#2563eb"};
