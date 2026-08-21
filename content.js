@@ -279,17 +279,16 @@
           max-width: none !important;
         }
 
-        /* ── Bootstrap Grid - পিসি লেআউট রাখা ── */
+        /* ── Bootstrap Grid - পিসি লেআউট রাখা (flex নয়) ── */
         .row {
-          display: flex !important;
-          flex-wrap: wrap !important;
-          flex-direction: row !important;
+          display: table !important;
+          table-layout: auto !important;
+          width: 100% !important;
         }
         .row > [class*="col-"], .row > [class*="col-md"], .row > [class*="col-lg"],
         .row > [class*="col-sm"], .row > .col {
-          flex: 1 1 auto !important;
+          display: table-cell !important;
           width: auto !important;
-          max-width: none !important;
         }
 
         /* ── টেবিল ── */
@@ -545,7 +544,6 @@
             align-items: center;
             font-family: ${usedFont};
             font-size: ${fs - 1}px;
-            border-top: 2px solid ${s.borderColor || "#2563eb"};
           `}
         }
 
