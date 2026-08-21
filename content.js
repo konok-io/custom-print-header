@@ -122,6 +122,10 @@
       #${HEADER_ID}, #${FOOTER_ID}, #__cphf_page_num__, #__cphf_watermark__ { display: none !important; }
 
       @media print {
+        /* CSS counter for page numbers */
+        @page { counter-increment: page; }
+        body { counter-reset: page; }
+
         @page {
           size: A4 ${s.pageOrientation || "portrait"};
           margin-top:    ${hMargin};
@@ -219,6 +223,9 @@
             font-size: ${fs}px;
             color: ${s.textColor || "#000"};
             z-index: 2147483646;
+          }
+          #__cphf_page_num__::before {
+            content: "পেজ " counter(page);
           }
         ` : ""}
 

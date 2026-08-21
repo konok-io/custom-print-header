@@ -142,7 +142,9 @@ syncColor("borderColor", "borderColorHex");
 const fontRange = $("fontSize");
 if (fontRange) {
   fontRange.addEventListener("input", () => {
-    $("fontSizeVal").textContent = fontRange.value;
+    const val = fontRange.value;
+    if ($("fontSizeVal")) $("fontSizeVal").textContent = val;
+    if ($("fontSizeLabel")) $("fontSizeLabel").textContent = val;
   });
 }
 
