@@ -264,13 +264,13 @@
           font-style: normal;
         }
         
-        /* CSS counter for page numbers */
+        /* CSS counter for page numbers - শুরু ১ থেকে */
         @page {
           size: A4 ${s.pageOrientation || "portrait"};
           margin: 10mm;
           counter-increment: page;
         }
-        body { counter-reset: page; }
+        body { counter-reset: page 1; }
 
         /* Chrome সামঞ্জস্যতা */
         html, body {
@@ -638,7 +638,7 @@
       document.body.appendChild(header);
     }
 
-    /* ── ৪. ফুটার তৈরি ── */
+            /* ── ৪. ফুটার তৈরি ── */
     if (fShow) {
       const footer = document.createElement("div");
       footer.id = FOOTER_ID;
@@ -656,7 +656,7 @@
           right = right ? `${right} | ${d}` : d;
         }
         // পেজ নম্বর ডান পাশে
-        const pageNum = s.pageNumbers ? `<span class="cphf-page-num">পেজ <span class="cphf-page-counter"></span></span>` : "";
+        const pageNum = s.pageNumbers ? `<span class="cphf-page-num">পেজ&nbsp;<span class="cphf-page-counter"></span></span>` : "";
         footer.innerHTML = `
           <span class="cphf-footer-left">${left}</span>
           <span class="cphf-footer-center">${center}</span>
