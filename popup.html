@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>বিন মিশাল প্রিন্ট লেআউট</title>
+  <style>
+    @font-face {
+      font-family: 'StarNews';
+      src: url('fonts/bangla.ttf') format('truetype');
+      font-display: swap;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 400px;
+      font-family: 'StarNews', 'Segoe UI', Arial, sans-serif;
+      font-size: 13px;
+      background: #f1f5f9;
+      color: #1e293b;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      color: #fff;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 10px; }
+    .topbar-icon { font-size: 22px; }
+    .topbar h1 { font-size: 14px; font-weight: 700; font-family: 'StarNews', sans-serif; }
+    .topbar p  { font-size: 11px; opacity: .78; margin-top: 2px; font-family: 'StarNews', sans-serif; }
+
+    /* toggle */
+    .switch { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; inset: 0; background: rgba(255,255,255,.3); border-radius: 22px; cursor: pointer; transition: background .2s; }
+    .slider::before { content:''; position: absolute; width: 16px; height: 16px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: transform .2s; }
+    input:checked + .slider { background: #22c55e; }
+    input:checked + .slider::before { transform: translateX(18px); }
+
+    /* ── Tabs ── */
+    .tabs { display: flex; background: #fff; border-bottom: 2px solid #e2e8f0; }
+    .tab { flex: 1; padding: 10px 4px; text-align: center; cursor: pointer; font-size: 12px; font-weight: 600; color: #64748b; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: color .15s, border-color .15s; user-select: none; font-family: 'StarNews', sans-serif; }
+    .tab:hover { color: #1d4ed8; }
+    .tab.active { color: #1d4ed8; border-bottom-color: #1d4ed8; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── Card ── */
+    .card { background: #fff; margin: 10px 10px 0; border-radius: 10px; padding: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    .card:last-of-type { margin-bottom: 10px; }
+    .card-title { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 12px; font-family: 'StarNews', sans-serif; }
+
+    /* ── Mode selector ── */
+    .mode-row { display: flex; gap: 6px; margin-bottom: 14px; }
+    .mode-btn { flex: 1; padding: 8px 6px; border: 1.5px solid #e2e8f0; border-radius: 8px; background: #f8fafc; font-size: 12px; font-weight: 600; color: #64748b; cursor: pointer; transition: all .15s; text-align: center; font-family: 'StarNews', sans-serif; }
+    .mode-btn:hover { border-color: #3b82f6; color: #1d4ed8; }
+    .mode-btn.active { border-color: #1d4ed8; background: #eff6ff; color: #1d4ed8; }
+
+    /* ── Form ── */
+    .form-row { margin-bottom: 9px; }
+    .form-row:last-child { margin-bottom: 0; }
+    label { display: block; font-size: 11.5px; font-weight: 600; color: #475569; margin-bottom: 4px; font-family: 'StarNews', sans-serif; }
+    input[type=text], input[type=email], input[type=url], input[type=tel], select {
+      width: 100%; padding: 7px 10px;
+      border: 1.5px solid #e2e8f0; border-radius: 7px;
+      font-size: 13px; font-family: 'StarNews', sans-serif;
+      color: #1e293b; background: #f8fafc; outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    input:focus, select:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15); background: #fff; }
+    select { cursor: pointer; }
+
+    /* ── Logo ── */
+    .logo-area { display: flex; align-items: center; gap: 10px; }
+    .logo-preview { width: 64px; height: 52px; border: 1.5px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #f8fafc; flex-shrink: 0; }
+    .logo-preview img { max-width: 100%; max-height: 100%; object-fit: contain; display: none; }
+    .logo-preview .ph { font-size: 22px; }
+    .logo-actions { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+
+    /* ── SVG drop ── */
+    .svg-drop { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 18px; text-align: center; cursor: pointer; transition: all .2s; background: #f8fafc; position: relative; }
+    .svg-drop.drag { border-color: #1d4ed8; background: #eff6ff; }
+    .svg-drop input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .svg-drop-icon { font-size: 28px; margin-bottom: 6px; }
+    .svg-drop p { font-size: 12px; color: #475569; margin-bottom: 3px; font-family: 'StarNews', sans-serif; }
+    .svg-drop span { font-size: 11px; color: #94a3b8; font-family: 'StarNews', sans-serif; }
+    .svg-preview-wrap { margin-top: 10px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff; display: none; }
+    .svg-preview-wrap svg { width: 100% !important; height: auto !important; display: block; }
+    .svg-actions { display: none; align-items: center; gap: 8px; margin-top: 8px; }
+    .hint { font-size: 11px; color: #64748b; margin-top: 8px; padding: 7px 10px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #3b82f6; line-height: 1.5; font-family: 'StarNews', sans-serif; }
+    .hint code { background: #e2e8f0; padding: 1px 4px; border-radius: 3px; font-size: 10px; }
+
+    /* ── Buttons ── */
+    .btn-outline { width: 100%; padding: 6px 10px; border: 1.5px solid #cbd5e1; border-radius: 7px; background: #fff; font-size: 12px; cursor: pointer; color: #475569; font-weight: 600; transition: border-color .15s, color .15s; font-family: 'StarNews', sans-serif; }
+    .btn-outline:hover { border-color: #3b82f6; color: #1d4ed8; }
+    .btn-danger { border-color: #fca5a5 !important; color: #dc2626 !important; }
+    .btn-danger:hover { border-color: #dc2626 !important; }
+    .btn-sm { width: auto; padding: 5px 10px; font-size: 11px; }
+
+    /* ── Colors ── */
+    .color-row { display: flex; gap: 8px; }
+    .color-row .form-row { flex: 1; margin-bottom: 0; }
+    .color-wrap { display: flex; align-items: center; gap: 6px; border: 1.5px solid #e2e8f0; border-radius: 7px; padding: 4px 8px; background: #f8fafc; }
+    input[type=color] { width: 24px; height: 24px; border: none; border-radius: 4px; padding: 0; cursor: pointer; background: none; }
+    .color-hex { font-size: 11px; color: #475569; font-family: monospace; width: 58px; }
+
+    /* ── Footer grid ── */
+    .footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; }
+    .footer-grid label { font-size: 10.5px; color: #94a3b8; }
+
+    /* ── Sub-toggle ── */
+    .sub-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #f1f5f9; margin-bottom: 12px; }
+    .sub-toggle-row span { font-size: 12px; font-weight: 600; color: #334155; font-family: 'StarNews', sans-serif; }
+    .switch-sm { width: 34px; height: 18px; }
+    .switch-sm .slider::before { width: 12px; height: 12px; }
+    .switch-sm input:checked + .slider::before { transform: translateX(16px); }
+
+    /* ── Checkbox ── */
+    .check-row { display: flex; align-items: center; gap: 7px; margin-top: 9px; cursor: pointer; }
+    .check-row input[type=checkbox] { width: 15px; height: 15px; accent-color: #1d4ed8; cursor: pointer; }
+    .check-row span { font-size: 12px; color: #475569; font-family: 'StarNews', sans-serif; }
+
+    /* ── Range ── */
+    .range-row { display: flex; align-items: center; gap: 10px; }
+    input[type=range] { flex: 1; accent-color: #1d4ed8; cursor: pointer; }
+    .range-val { font-size: 12px; font-weight: 700; color: #1d4ed8; min-width: 28px; text-align: right; }
+
+    /* ── Font preview badge ── */
+    .font-badge { display: inline-flex; align-items: center; gap: 5px; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-family: 'StarNews', sans-serif; margin-bottom: 10px; }
+
+    /* ── Theme dots ── */
+    .theme-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .theme-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2.5px solid transparent; transition: border-color .15s, transform .15s; }
+    .theme-dot:hover { border-color: #1e293b; transform: scale(1.1); }
+
+    /* ── Bottom bar ── */
+    .bottom-bar { position: sticky; bottom: 0; background: #fff; border-top: 1px solid #e2e8f0; padding: 10px 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+    .btn-row { display: flex; gap: 8px; }
+    .btn-primary { flex: 1; padding: 10px; background: #1d4ed8; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: background .15s; font-family: 'StarNews', sans-serif; }
+    .btn-primary:hover { background: #1e40af; }
+    .btn-reset { padding: 10px 14px; background: #f1f5f9; color: #64748b; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'StarNews', sans-serif; }
+    .btn-reset:hover { background: #e2e8f0; }
+    .status { text-align: center; font-size: 12px; font-weight: 600; padding: 5px 8px; border-radius: 6px; display: none; font-family: 'StarNews', sans-serif; }
+    .status.success { background: #dcfce7; color: #16a34a; }
+    .status.error   { background: #fee2e2; color: #dc2626; }
+  </style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-icon">🖨️</span>
+    <div>
+      <h1>বিন মিশাল প্রিন্ট লেআউট</h1>
+      <p>কাস্টম হেডার ও ফুটার — বাংলা ফন্ট সহ</p>
+    </div>
+  </div>
+  <label class="switch">
+    <input type="checkbox" id="enableToggle" checked>
+    <span class="slider"></span>
+  </label>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" data-tab="tab-header">📋 হেডার</div>
+  <div class="tab" data-tab="tab-footer">📄 ফুটার</div>
+  <div class="tab" data-tab="tab-design">🎨 ডিজাইন</div>
+</div>
+
+<!-- ═══════ HEADER TAB ═══════ -->
+<div id="tab-header" class="tab-content active">
+  <div class="card">
+    <div class="sub-toggle-row">
+      <span>হেডার চালু রাখুন</span>
+      <label class="switch switch-sm">
+        <input type="checkbox" id="headerEnabled" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="card-title">ডিজাইন পদ্ধতি</div>
+    <div class="mode-row">
+      <button class="mode-btn active" data-mode="fields" data-target="header">📝 ফিল্ড ব্যবহার করুন</button>
+      <button class="mode-btn" data-mode="svg" data-target="header">🎨 SVG ডিজাইন আপলোড</button>
+    </div>
+    <input type="hidden" id="headerMode" value="fields">
+  </div>
+
+  <!-- Fields -->
+  <div id="headerFieldsSection">
+    <div class="card">
+      <div class="card-title">লোগো</div>
+      <div class="logo-area">
+        <div class="logo-preview" id="logoBox">
+          <span class="ph" id="logoPlaceholder">🏢</span>
+          <img id="logoPreviewImg" alt="">
+        </div>
+        <div class="logo-actions">
+          <button class="btn-outline" id="uploadTrigger">📁 লোগো আপলোড</button>
+          <button class="btn-outline btn-danger" id="removeLogo">✕ সরান</button>
+          <input type="file" id="logoInput" accept="image/*" style="display:none">
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">প্রতিষ্ঠানের তথ্য</div>
+      <div class="form-row">
+        <label>প্রতিষ্ঠানের নাম</label>
+        <input type="text" id="companyName" placeholder="যেমন: বিন মিশাল ট্রেডিং লি.">
+      </div>
+      <div class="form-row">
+        <label>ট্যাগলাইন</label>
+        <input type="text" id="tagline" placeholder="যেমন: আমদানি ও রপ্তানি">
+      </div>
+      <div class="form-row">
+        <label>ঠিকানা</label>
+        <input type="text" id="address" placeholder="যেমন: ১২৩, মতিঝিল, ঢাকা-১০০০">
+      </div>
+      <div class="form-row">
+        <label>ফোন</label>
+        <input type="tel" id="phone" placeholder="+৮৮০-১৭০০-০০০০০০">
+      </div>
+      <div class="form-row">
+        <label>ইমেইল</label>
+        <input type="email" id="email" placeholder="info@yourcompany.com">
+      </div>
+      <div class="form-row">
+        <label>ওয়েবসাইট</label>
+        <input type="url" id="website" placeholder="https://www.yoursite.com">
+      </div>
+    </div>
+  </div>
+
+  <!-- SVG upload (header) -->
+  <div id="headerSvgSection" style="display:none">
+    <div class="card">
+      <div class="card-title">হেডার SVG ডিজাইন</div>
+      <div class="svg-drop" id="headerSvgDrop">
+        <input type="file" id="headerSvgInput" accept=".svg,image/svg+xml">
+        <div class="svg-drop-icon">📐</div>
+        <p><strong>SVG ফাইল ড্র্যাগ করুন অথবা ক্লিক করুন</strong></p>
+        <span>শুধু .svg ফাইল গ্রহণযোগ্য</span>
+      </div>
+      <div class="svg-preview-wrap" id="headerSvgPreview"></div>
+      <div class="svg-actions" id="headerSvgActions">
+        <button class="btn-outline btn-sm btn-danger" id="clearHeaderSvg">✕ SVG সরান</button>
+        <span id="headerSvgName" style="font-size:11px;color:#64748b"></span>
+      </div>
+      <p class="hint">💡 <code>viewBox="0 0 680 90"</code> ব্যবহার করুন। বাংলা টেক্সটের জন্য SVG-এ <code>font-family="StarNews"</code> লিখলে বাংলা ফন্ট দেখাবে।</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ FOOTER TAB ═══════ -->
+<div id="tab-footer" class="tab-content">
+  <div class="card">
+    <div class="sub-toggle-row">
+      <span>ফুটার চালু রাখুন</span>
+      <label class="switch switch-sm">
+        <input type="checkbox" id="footerEnabled" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="card-title">ডিজাইন পদ্ধতি</div>
+    <div class="mode-row">
+      <button class="mode-btn active" data-mode="fields" data-target="footer">📝 ফিল্ড ব্যবহার করুন</button>
+      <button class="mode-btn" data-mode="svg" data-target="footer">🎨 SVG ডিজাইন আপলোড</button>
+    </div>
+    <input type="hidden" id="footerMode" value="fields">
+  </div>
+
+  <!-- Footer fields -->
+  <div id="footerFieldsSection">
+    <div class="card">
+      <div class="card-title">ফুটার টেক্সট (৩ কলাম)</div>
+      <div class="footer-grid">
+        <div>
+          <label>বামে</label>
+          <input type="text" id="footerLeft" placeholder="কোম্পানির নাম">
+        </div>
+        <div>
+          <label>মাঝে</label>
+          <input type="text" id="footerCenter" placeholder="ওয়েবসাইট">
+        </div>
+        <div>
+          <label>ডানে</label>
+          <input type="text" id="footerRight" placeholder="ফোন">
+        </div>
+      </div>
+      <label class="check-row">
+        <input type="checkbox" id="showDate">
+        <span>ডানে বাংলা তারিখ দেখাবে</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- SVG upload (footer) -->
+  <div id="footerSvgSection" style="display:none">
+    <div class="card">
+      <div class="card-title">ফুটার SVG ডিজাইন</div>
+      <div class="svg-drop" id="footerSvgDrop">
+        <input type="file" id="footerSvgInput" accept=".svg,image/svg+xml">
+        <div class="svg-drop-icon">📐</div>
+        <p><strong>SVG ফাইল ড্র্যাগ করুন অথবা ক্লিক করুন</strong></p>
+        <span>শুধু .svg ফাইল গ্রহণযোগ্য</span>
+      </div>
+      <div class="svg-preview-wrap" id="footerSvgPreview"></div>
+      <div class="svg-actions" id="footerSvgActions">
+        <button class="btn-outline btn-sm btn-danger" id="clearFooterSvg">✕ SVG সরান</button>
+        <span id="footerSvgName" style="font-size:11px;color:#64748b"></span>
+      </div>
+      <p class="hint">💡 ফুটারের জন্য <code>viewBox="0 0 680 50"</code> ব্যবহার করুন।</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ DESIGN TAB ═══════ -->
+<div id="tab-design" class="tab-content">
+
+  <!-- Font preview -->
+  <div class="card">
+    <div class="card-title">বাংলা ফন্ট</div>
+    <div class="font-badge">✓ StarNews বাংলা ফন্ট সক্রিয়</div>
+    <p style="font-family:'StarNews',sans-serif;font-size:16px;color:#1e293b;line-height:1.6;padding:8px;background:#f8fafc;border-radius:6px;border:1px solid #e2e8f0">
+      বিন মিশাল প্রিন্ট লেআউট<br>
+      <span style="font-size:13px;color:#64748b">আমদানি ও রপ্তানি ব্যবসা</span>
+    </p>
+  </div>
+
+  <!-- Colors -->
+  <div class="card">
+    <div class="card-title">রঙ (ফিল্ড মোডে প্রযোজ্য)</div>
+    <div class="color-row">
+      <div class="form-row">
+        <label>ব্যাকগ্রাউন্ড</label>
+        <div class="color-wrap">
+          <input type="color" id="bgColor" value="#ffffff">
+          <span class="color-hex" id="bgColorHex">#ffffff</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>লেখার রঙ</label>
+        <div class="color-wrap">
+          <input type="color" id="textColor" value="#000000">
+          <span class="color-hex" id="textColorHex">#000000</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>বর্ডার রঙ</label>
+        <div class="color-wrap">
+          <input type="color" id="borderColor" value="#2563eb">
+          <span class="color-hex" id="borderColorHex">#2563eb</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Font size -->
+  <div class="card">
+    <div class="card-title">ফন্ট সাইজ</div>
+    <div class="form-row">
+      <label>সাইজ: <span id="fontSizeLabel">12</span>px</label>
+      <div class="range-row">
+        <input type="range" id="fontSize" min="9" max="18" value="12" step="1">
+        <span class="range-val" id="fontSizeVal">12</span>
+      </div>
+    </div>
+    <input type="hidden" id="fontFamily" value="StarNews">
+  </div>
+
+  <!-- Themes -->
+  <div class="card">
+    <div class="card-title">প্রিসেট থিম</div>
+    <div class="theme-row">
+      <div class="theme-dot" title="Classic" data-theme="classic" style="background:#333"></div>
+      <div class="theme-dot" title="Blue" data-theme="blue" style="background:#2563eb"></div>
+      <div class="theme-dot" title="Green" data-theme="green" style="background:#16a34a"></div>
+      <div class="theme-dot" title="Red" data-theme="red" style="background:#e11d48"></div>
+      <div class="theme-dot" title="Dark" data-theme="dark" style="background:#1e293b"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Credit -->
+<div style="
+  text-align:center;
+  padding:7px 10px 5px;
+  background:#f8fafc;
+  border-top:1px solid #e2e8f0;
+  font-family:'StarNews','Segoe UI',sans-serif;
+">
+  <span style="font-size:10px;color:#94a3b8;">Developed by &nbsp;</span>
+  <a href="https://www.konok.io" target="_blank"
+     style="font-size:11px;font-weight:700;color:#1d4ed8;text-decoration:none;letter-spacing:.3px;">
+    www.konok.io
+  </a>
+</div>
+
+<!-- Bottom bar -->
+<div class="bottom-bar">
+  <div class="status" id="statusMsg"></div>
+  <div class="btn-row">
+    <button class="btn-primary" id="saveBtn">💾 সেটিংস সেভ করুন</button>
+    <button class="btn-reset" id="resetBtn" title="রিসেট">↺</button>
+  </div>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
