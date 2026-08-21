@@ -353,6 +353,26 @@
         html {
           overflow: visible !important;
         }
+
+        /* ──── ৫. ওয়াটারমার্ক (শুধু প্রিন্টে) ──── */
+        ${s.watermark !== "none" && watermarkText ? `
+          #__cphf_watermark__ {
+            display: block !important;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 100px;
+            font-weight: bold;
+            font-family: ${usedFont};
+            color: ${wmColor};
+            opacity: ${watermarkOpacity};
+            pointer-events: none;
+            z-index: 999999;
+            white-space: nowrap;
+            text-transform: uppercase;
+          }
+        ` : ""}
       }
 
       /* ──── ০. ওয়েবসাইটের মূল হেডার/ফুটার লুকান (সবসময়) ──── */
@@ -450,26 +470,6 @@
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
-          }
-        ` : ""}
-
-        /* ──── ৫. ওয়াটারমার্ক ──── */
-        ${s.watermark !== "none" && watermarkText ? `
-          #__cphf_watermark__ {
-            display: block !important;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 100px;
-            font-weight: bold;
-            font-family: ${usedFont};
-            color: ${wmColor};
-            opacity: ${watermarkOpacity};
-            pointer-events: none;
-            z-index: 999999;
-            white-space: nowrap;
-            text-transform: uppercase;
           }
         ` : ""}
 
