@@ -52,6 +52,52 @@
     });
   }
 
+  /* ── RTL → LTR ডাইরেকশন ঠিক করা ── */
+  function fixRtlDirection(enable) {
+    if (enable) {
+      // html/body এর dir অ্যাট্রিবিউট পরিবর্তন
+      document.documentElement.setAttribute("dir", "ltr");
+      document.body.setAttribute("dir", "ltr");
+      document.documentElement.style.direction = "ltr";
+      document.body.style.direction = "ltr";
+      
+      // সব RTL এলিমেন্ট খুঁজে dir পরিবর্তন
+      document.querySelectorAll("[dir='rtl']").forEach(el => {
+        el.setAttribute("dir", "ltr");
+      });
+      
+      // MutationObserver দিয়ে নতুন RTL এলিমেন্ট ট্র্যাক করা
+      if (!window.__cphf_rtl_observer) {
+        window.__cphf_rtl_observer = new MutationObserver(mutations => {
+          mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+              if (node.nodeType === 1) { // Element node
+                if (node.getAttribute && node.getAttribute("dir") === "rtl") {
+                  node.setAttribute("dir", "ltr");
+                }
+                node.querySelectorAll && node.querySelectorAll("[dir='rtl']").forEach(el => {
+                  el.setAttribute("dir", "ltr");
+                });
+              }
+            });
+          });
+        });
+        window.__cphf_rtl_observer.observe(document.body, { 
+          childList: true, 
+          subtree: true,
+          attributes: true,
+          attributeFilter: ["dir"]
+        });
+      }
+    } else {
+      // RTL observer বন্ধ করা
+      if (window.__cphf_rtl_observer) {
+        window.__cphf_rtl_observer.disconnect();
+        window.__cphf_rtl_observer = null;
+      }
+    }
+  }
+
   /* ── SVG থেকে margin বের করা ── */
   function getSvgMargin(svgStr, fallback) {
     try {
@@ -116,14 +162,43 @@
     const watermarkText = s.watermark === "custom" ? s.watermarkText : s.watermark;
     const wmColor = s.watermarkColor || "#000000";
 
-    /* ── ২.১. স্ক্রিনে RTL ঠিক করা (প্রিন্টের আগে দেখার জন্য) ── */
+    /* ── ২.১. RTL ঠিক করা ── */
     let rtlScreenCSS = "";
     if (s.fixRtl) {
       rtlScreenCSS = `
-        html[dir="rtl"], body[dir="rtl"] { direction: ltr !important; text-align: left !important; }
-        [dir="rtl"], .rtl, [class*="rtl"] { direction: ltr !important; text-align: left !important; }
-        table, thead, tbody, tr, th, td { direction: ltr !important; text-align: left !important; }
-        * { direction: ltr !important; unicode-bidi: plaintext !important; }
+        /* স্ক্রিন ও প্রিন্ট উভয়ে RTL ঠিক করা */
+        html, body,
+        html[dir="rtl"], body[dir="rtl"] { 
+          direction: ltr !important; 
+          text-align: left !important; 
+        }
+        [dir="rtl"], .rtl, [class*="rtl"], [class*="RTL"],
+        [data-dir="rtl"], [data-rtl], [data-direction="rtl"] { 
+          direction: ltr !important; 
+          text-align: left !important; 
+        }
+        table, thead, tbody, tr, th, td { 
+          direction: ltr !important; 
+          text-align: left !important; 
+        }
+        /* RTL-specific positioning fixes */
+        .ms-rtl, [style*="right"], [style*="float: right"] { 
+          float: left !important; 
+        }
+        /* Margin/Padding adjustments for RTL→LTR */
+        [style*="margin-right"], [style*="margin-left"] { 
+          margin-left: inherit !important; 
+        }
+        /* Main container adjustments */
+        #masterPage, #mainContent, .main-container, 
+        .container, .content-wrapper, #content {
+          direction: ltr !important;
+          text-align: left !important;
+        }
+        * { 
+          direction: ltr !important; 
+          unicode-bidi: plaintext !important; 
+        }
       `;
     }
 
@@ -454,7 +529,10 @@
   /* ── লোড ও ইনজেক্ট ── */
   function loadAndInject() {
     chrome.storage.local.get("printSettings", result => {
-      injectElements(Object.assign({}, DEFAULTS, result.printSettings || {}));
+      const s = Object.assign({}, DEFAULTS, result.printSettings || {});
+      // RTL ডাইরেকশন ঠিক করা (স্ক্রিনে দেখার জন্য)
+      fixRtlDirection(s.fixRtl);
+      injectElements(s);
     });
   }
 
@@ -486,6 +564,9 @@
       const s = Object.assign({}, DEFAULTS, result.printSettings || {});
       handlePrintBeforePrint(s);
       
+      // প্রিন্টের আগে RTL ঠিক করা (যদি enable থাকে)
+      fixRtlDirection(s.fixRtl);
+      
       // Re-inject to ensure CSS is applied
       injectElements(s);
     });
@@ -493,7 +574,10 @@
 
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "local" && changes.printSettings) {
-      injectElements(Object.assign({}, DEFAULTS, changes.printSettings.newValue || {}));
+      const s = Object.assign({}, DEFAULTS, changes.printSettings.newValue || {});
+      // RTL ডাইরেকশন ঠিক করা
+      fixRtlDirection(s.fixRtl);
+      injectElements(s);
     }
   });
 
