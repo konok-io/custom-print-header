@@ -237,39 +237,21 @@
           }
         ` : ""}
 
-        /* ──── ৩. RTL ওয়েবসাইট English/LTR স্টাইলে ──── */
+        /* ──── ৩. RTL ওয়েবসাইট - শুধু প্রিন্ট সমস্যা সমাধান ──── */
         ${s.fixRtl ? `
           /* Chrome সামঞ্জস্যতা */
           * { box-sizing: border-box !important; }
           
-          /* RTL ওয়েবসাইট ঠিক করা */
-          html[dir="rtl"], body[dir="rtl"], [dir="rtl"] {
-            direction: ltr !important;
-            text-align: left !important;
-          }
-          
-          /* সব এলিমেন্ট LTR */
-          [dir="rtl"], .rtl, [class*="rtl"], [style*="rtl"] {
-            direction: ltr !important;
-            text-align: left !important;
-          }
-          
-          /* টেবিল ও ফর্ম এলিমেন্ট */
-          table, thead, tbody, tr, th, td, input, select, textarea {
-            direction: ltr !important;
-            text-align: left !important;
-          }
-          
-          /* মার্জিন রিসেট - Chrome-এ সমস্যা সমাধান */
-          [dir="rtl"], body[dir="rtl"] {
+          /* প্রিন্টে RTL মার্জিন সমস্যা সমাধান */
+          html[dir="rtl"], body[dir="rtl"] {
             margin-right: 0 !important;
             padding-right: 0 !important;
           }
           
-          /* সব এলিমেন্ট LTR */
-          * {
-            direction: ltr !important;
-            unicode-bidi: plaintext !important;
+          /* টেবিল ও ফর্ম প্রস্থ ঠিক করা */
+          table, thead, tbody, tr, th, td, input, select, textarea {
+            max-width: none !important;
+            min-width: 0 !important;
           }
         ` : ""}
 
