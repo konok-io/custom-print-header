@@ -33,6 +33,7 @@
     fontFamily:     "StarNews",
     contentOnly:    false,
     pageOrientation: "portrait",
+    pageMargin:     "default",  // "default" = with margins, "none" = no margins
     fixRtl:        false,
     removeFixed:   false,
     printBackground: false,
@@ -139,10 +140,17 @@
 
         @page {
           size: A4 ${s.pageOrientation || "portrait"};
+          ${s.pageMargin === "none" ? `
+          margin-top:    0;
+          margin-bottom: 0;
+          margin-left:   0;
+          margin-right:  0;
+          ` : `
           margin-top:    ${hMargin};
           margin-bottom: ${fMargin};
           margin-left:   15mm;
           margin-right:  15mm;
+          `}
         }
 
         /* Chrome সামঞ্জস্যতা - body margin রিসেট */
@@ -323,11 +331,12 @@
           }
         ` : ""}
 
-        /* ──── হেডার (পূর্ণ প্রস্থ) ──── */
+        /* ──── হেডার (পূর্ণ প্রস্থ, মার্জিন অনুযায়ী পজিশন) ──── */
         #${HEADER_ID} {
           display: ${hShow ? "block" : "none"} !important;
           position: fixed;
-          top: 0; left: 0; right: 0;
+          ${s.pageMargin === "none" ? "top: 0; bottom: auto;" : "top: 0;"}
+          left: 0; right: 0;
           width: 100% !important;
           min-width: 100% !important;
           max-width: 100% !important;
@@ -358,11 +367,12 @@
           #${HEADER_ID} .cphf-det   { font-family: ${usedFont}; font-size: ${fs - 1}px; margin: 0; opacity: .7; }
         ` : `#${HEADER_ID} svg { width: 100%; height: auto; display: block; }`}
 
-        /* ──── ফুটার (পূর্ণ প্রস্থ) ──── */
+        /* ──── ফুটার (পূর্ণ প্রস্থ, মার্জিন অনুযায়ী পজিশন) ──── */
         #${FOOTER_ID} {
           display: ${fShow ? "block" : "none"} !important;
           position: fixed;
-          bottom: 0; left: 0; right: 0;
+          ${s.pageMargin === "none" ? "bottom: 0; top: auto;" : "bottom: 0;"}
+          left: 0; right: 0;
           width: 100% !important;
           min-width: 100% !important;
           max-width: 100% !important;
