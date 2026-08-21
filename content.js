@@ -163,30 +163,62 @@
           min-width: 0 !important;
         }
 
-        /* ──── ১. নেভিগেশন/সাইডবার লুকান ──── */
+        /* ──── ১. নেভিগেশন/সাইডবার/লে-আউট লুকান (শুধু কন্টেন্ট দেখাবে) ──── */
         ${s.contentOnly ? `
-          nav, .navbar, .nav, .navigation, .header-nav, .top-nav,
-          header nav, .main-nav, .site-nav, [role="navigation"],
-          .menu, .sidebar-menu, .nav-menu, .topbar, .navbar-header,
+          /* Navigation & Header */
+          nav, .navbar, .nav, .navigation, .header-nav, .top-nav, .main-nav, .site-nav,
+          header nav, .menu, .sidebar-menu, .nav-menu, .topbar, .navbar-header,
+          .navbar-collapse, .nav-collapse, .navbar-toggle, .hamburger,
+          
+          /* Sidebar & Aside */
           aside, .sidebar, .side-bar, .left-sidebar, .right-sidebar,
-          .sidebar-left, .sidebar-right, .aside, [role="complementary"],
-          .menu-sidebar, .nav-sidebar, .widget-area, .secondary,
-          .page-header, .site-header, .header, .top-header,
-          #header, .header-area, .page-title-bar, .title-bar,
-          footer, .footer, .site-footer, #footer, .page-footer,
-          .footer-area, .copyright, .site-info, .footer-content,
-          .advertisement, .ad, .ads, .promo, .promotion,
-          .banner, .sponsor, [class*="ad-"], [class*="ads-"],
-          .advert, .promotional, .promo-banner,
-          .social, .share, .sharing, .social-share,
-          .social-links, .share-buttons, [class*="share-"],
+          .sidebar-left, .sidebar-right, .aside, .widget-area, .secondary,
+          [role="complementary"], .widget, .widgets,
+          
+          /* Header ও Footer sections */
+          header, .header, .site-header, .page-header, .top-header, .main-header,
+          #header, .header-area, .header-wrap, .header-wrapper,
+          .page-title-bar, .title-bar, .page-title,
+          footer, .footer, .site-footer, .page-footer, #footer,
+          .footer-area, .footer-wrap, .copyright, .site-info, .footer-content,
+          
+          /* Ads & Promotions */
+          .advertisement, .ad, .ads, .promo, .promotion, .advert, .promotional,
+          .promo-banner, .banner, .sponsor, .adsbygoogle, .ads-container,
+          [class*="ad-"], [class*="ads-"], [id*="ad-"], [id*="ads-"],
+          
+          /* Social & Share */
+          .social, .share, .sharing, .social-share, .social-links, .share-buttons,
+          [class*="share-"], [class*="social-"],
+          
+          /* Breadcrumb & Tools */
           .breadcrumb, .breadcrumbs, .pagination, .pager,
           .toolbar, .action-bar, .controls, .filters,
-          .search-box, .search-form, .search-bar,
-          main, .main, .content, .main-content, #content,
-          .page-content, .article-content, .post-content,
-          body > *:not(main):not(.${HEADER_ID.substring(2)}):not(.${FOOTER_ID.substring(2)}):not(#__cphf_page_num__):not(#__cphf_watermark__) {
+          .search-box, .search-form, .search-bar, .search,
+          
+          /* Layout Containers (যা কন্টেন্ট নয়) */
+          .container-fluid, .container-wide, .wrapper, .wrap,
+          .layout-sidebar, .layout-main, .main-wrapper, .content-wrapper,
+          .page-wrapper, .site-wrapper, .site-container,
+          .container, .row, .col, .grid,
+          
+          /* অন্যান্য নন-কন্টেন্ট এলিমেন্ট */
+          [role="banner"], [role="navigation"], [role="contentinfo"],
+          .hidden-print, .no-print, .print-hide,
+          .modal, .popup, .overlay, .tooltip,
+          video, audio, iframe, object, embed,
+          
+          /* Body direct children (শুধু হেডার/ফুটার এলিমেন্ট) */
+          body > *:not(main):not(.${HEADER_ID.substring(2)}):not(.${FOOTER_ID.substring(2)}):not(#__cphf_page_num__):not(#__cphf_watermark__):not(article):not(section) {
             display: none !important;
+          }
+          
+          /* কন্টেন্ট এলিমেন্ট show করা */
+          main, [role="main"], [role="content"], article, section,
+          .content, .main-content, .page-content, .post-content,
+          .article-content, #content, .main, .page-content-area {
+            display: block !important;
+            visibility: visible !important;
           }
         ` : ""}
 
