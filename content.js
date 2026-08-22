@@ -311,6 +311,14 @@
         #${HEADER_ID}, #${FOOTER_ID}, #__cphf_page_num__, #__cphf_watermark__ { display: none !important; }
       }
 
+      /* @page must be outside @media print */
+      @page {
+        size: A4 ${s.pageOrientation || "portrait"};
+        margin: 10mm;
+        counter-increment: page;
+      }
+      body { counter-reset: page 1; }
+
       @media print {
         /* বাংলা ফন্ট প্রিন্টে লোড */
         @font-face {
@@ -327,14 +335,6 @@
         #${HEADER_ID} *, #${FOOTER_ID} * {
           font-family: 'StarNews', sans-serif !important;
         }
-        
-        /* CSS counter for page numbers - শুরু ১ থেকে */
-        @page {
-          size: A4 ${s.pageOrientation || "portrait"};
-          margin: 10mm;
-          counter-increment: page;
-        }
-        body { counter-reset: page 1; }
 
         /* Chrome সামঞ্জস্যতা */
         html, body {
