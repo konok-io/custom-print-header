@@ -100,14 +100,6 @@ document.querySelectorAll(".tab").forEach(tab => {
   });
 });
 
-/* ── Sync enabled toggles (topbar & design tab) ── */
-$("enableToggle")?.addEventListener("change", function() {
-  if ($("enabled")) $("enabled").checked = this.checked;
-});
-$("enabled")?.addEventListener("change", function() {
-  if ($("enableToggle")) $("enableToggle").checked = this.checked;
-});
-
 /* ── Mode selector (ফিল্ড / SVG) ── */
 function setMode(target, mode) {
   // update hidden input
@@ -297,7 +289,6 @@ function loadSettings() {
 
 function populateForm(s) {
   setChk("enableToggle",  s.enabled);
-  setChk("enabled",        s.enabled);
   setChk("headerEnabled", s.headerEnabled);
   setChk("footerEnabled", s.footerEnabled);
   setChk("contentOnly", s.contentOnly);
@@ -371,7 +362,7 @@ function populateForm(s) {
 /* ── Collect form values ── */
 function getSettings() {
   return {
-    enabled:       chk("enableToggle") || chk("enabled"),
+    enabled:       chk("enableToggle"),
     headerEnabled: chk("headerEnabled"),
     footerEnabled: chk("footerEnabled"),
     contentOnly:    chk("contentOnly"),
