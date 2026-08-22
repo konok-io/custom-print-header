@@ -289,6 +289,7 @@ function loadSettings() {
 
 function populateForm(s) {
   setChk("enableToggle",  s.enabled);
+  setChk("enabled",        s.enabled);
   setChk("headerEnabled", s.headerEnabled);
   setChk("footerEnabled", s.footerEnabled);
   setChk("contentOnly", s.contentOnly);
@@ -362,7 +363,7 @@ function populateForm(s) {
 /* ── Collect form values ── */
 function getSettings() {
   return {
-    enabled:       chk("enableToggle"),
+    enabled:       chk("enableToggle") || chk("enabled"),
     headerEnabled: chk("headerEnabled"),
     footerEnabled: chk("footerEnabled"),
     contentOnly:    chk("contentOnly"),

@@ -169,14 +169,14 @@
 
 <!-- Tabs -->
 <div class="tabs">
-  <div class="tab active" data-tab="tab-header">📋 হেডার</div>
+  <div class="tab active" data-tab="tab-design">🎨 ডিজাইন</div>
+  <div class="tab" data-tab="tab-header">📋 হেডার</div>
   <div class="tab" data-tab="tab-footer">📄 ফুটার</div>
-  <div class="tab" data-tab="tab-design">🎨 ডিজাইন</div>
   <div class="tab" data-tab="tab-features">⚡ ফিচার</div>
 </div>
 
 <!-- ═══════ HEADER TAB ═══════ -->
-<div id="tab-header" class="tab-content active">
+<div id="tab-header" class="tab-content">
   <div class="card">
     <div class="sub-toggle-row">
       <span>হেডার চালু রাখুন</span>
@@ -322,7 +322,19 @@
 </div>
 
 <!-- ═══════ DESIGN TAB ═══════ -->
-<div id="tab-design" class="tab-content">
+<div id="tab-design" class="tab-content active">
+
+  <!-- Main Toggle -->
+  <div class="card" style="background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%); border: 1px solid #bfdbfe;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+      <span style="font-size: 14px; font-weight: 700; color: #1e40af; font-family: 'StarNews', sans-serif;">🖨️ কাস্টম হেডার/ফুটার</span>
+      <label class="switch">
+        <input type="checkbox" id="enabled" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <p style="font-size: 11px; color: #64748b; font-family: 'StarNews', sans-serif;">অন করলে প্রিন্টে কাস্টম হেডার ও ফুটার দেখাবে।</p>
+  </div>
 
   <!-- Content Only Mode -->
   <div class="card">
