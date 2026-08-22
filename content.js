@@ -306,7 +306,10 @@
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = rtlScreenCSS + `
-      #${HEADER_ID}, #${FOOTER_ID}, #__cphf_page_num__, #__cphf_watermark__ { display: none !important; }
+      /* স্ক্রিনে হাইডেন, প্রিন্টে দেখাবে */
+      @media screen {
+        #${HEADER_ID}, #${FOOTER_ID}, #__cphf_page_num__, #__cphf_watermark__ { display: none !important; }
+      }
 
       @media print {
         /* বাংলা ফন্ট প্রিন্টে লোড */
