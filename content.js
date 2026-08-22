@@ -634,14 +634,13 @@
           #${HEADER_ID} .cphf-header-content {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 15px;
+            justify-content: space-between;
             padding: 10px 15px;
-            text-align: center;
           }
-          /* লোগো */
+          /* লোগো - বাম পাশে */
           #${HEADER_ID} .cphf-logo-wrap {
             flex-shrink: 0;
+            order: 1;
           }
           #${HEADER_ID} .cphf-logo {
             height: ${logoSize}px;
@@ -649,9 +648,16 @@
             max-height: ${logoSize}px;
             object-fit: contain;
           }
-          /* QR কোড - লোগোর সমান সাইজ */
+          /* কোম্পানি নাম - মাঝখানে */
+          #${HEADER_ID} .cphf-company-info {
+            flex-grow: 1;
+            text-align: center;
+            order: 2;
+          }
+          /* QR কোড - ডান পাশে */
           #${HEADER_ID} .cphf-qr-wrap {
             flex-shrink: 0;
+            order: 3;
             text-align: center;
             direction: ltr !important;
           }
@@ -671,11 +677,6 @@
             font-size: ${fs - 2}px;
             color: ${s.textColor || "#64748b"};
             margin-top: 2px;
-            direction: ltr !important;
-          }
-          /* প্রতিষ্ঠানের তথ্য - সেন্টার */
-          #${HEADER_ID} .cphf-company-info {
-            text-align: center;
             direction: ltr !important;
           }
           #${HEADER_ID} .cphf-name {
