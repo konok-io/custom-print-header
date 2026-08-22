@@ -174,6 +174,54 @@
     svg.removeAttribute("height");
   }
 
+  /* ── বারকোড জেনারেট ── */
+  function generateBarcodeSVG(data) {
+    const width = 100;
+    const height = 50;
+    const barWidth = width / (data.length * 11 + 35);
+    
+    let svg = `<svg viewBox="0 0 ${width} ${height + 10}" xmlns="http://www.w3.org/2000/svg">`;
+    
+    // Start guard
+    svg += `<rect x="0" y="0" width="${barWidth * 3}" height="${height}" fill="black"/>`;
+    let x = barWidth * 3;
+    
+    // Data bars
+    for (let i = 0; i < data.length; i++) {
+      const num = parseInt(data[i]);
+      const patterns = [
+        [1,1,0,1,0,1,0], // 0
+        [1,0,1,1,0,0,1], // 1
+        [1,0,0,1,1,0,1], // 2
+        [1,1,1,0,0,0,1], // 3
+        [1,0,1,1,0,1,0], // 4
+        [1,1,0,1,1,0,1], // 5
+        [1,0,0,0,1,1,1], // 6
+        [1,1,1,0,1,0,1], // 7
+        [1,0,1,0,1,1,1], // 8
+        [1,1,0,0,1,0,1]  // 9
+      ];
+      
+      const pattern = patterns[num];
+      for (let p = 0; p < 7; p++) {
+        if (pattern[p] === 1) {
+          svg += `<rect x="${x + p * barWidth}" y="0" width="${barWidth}" height="${height}" fill="black"/>`;
+        }
+        svg += `<rect x="${x + p * barWidth + barWidth}" y="0" width="${barWidth}" height="${height}" fill="white"/>`;
+      }
+      x += barWidth * 7 * 2;
+    }
+    
+    // End guard
+    svg += `<rect x="${x}" y="0" width="${barWidth * 3}" height="${height}" fill="black"/>`;
+    
+    // Number text below
+    svg += `<text x="${width / 2}" y="${height + 8}" text-anchor="middle" font-size="6" font-family="monospace">${data}</text>`;
+    svg += '</svg>';
+    
+    return svg;
+  }
+
   /* ── মূল ইনজেকশন ── */
   function injectElements(s) {
     removeElements();
@@ -515,11 +563,19 @@
             text-align: center;
             order: 2;
           }
-          /* ডান পাশে ফাঁকা জায়গা */
-          #${HEADER_ID} .cphf-header-right {
+          /* ডান পাশে বারকোড */
+          #${HEADER_ID} .cphf-barcode-wrap {
             flex-shrink: 0;
-            width: ${logoSize}px;
             order: 3;
+            text-align: center;
+          }
+          #${HEADER_ID} .cphf-barcode {
+            width: ${logoSize * 1.5}px;
+            height: ${logoSize}px;
+          }
+          #${HEADER_ID} .cphf-barcode svg {
+            width: 100%;
+            height: 100%;
           }
           #${HEADER_ID} .cphf-name {
             font-family: ${usedFont};
@@ -630,6 +686,10 @@
         header.innerHTML = s.headerSvg;
         normalizeSvg(header);
       } else {
+        // বারকোড নম্বর জেনারেট
+        const barcodeNum = '5' + Math.floor(1000000000 + Math.random() * 9000000000).toString();
+        const barcodeSvg = generateBarcodeSVG(barcodeNum);
+        
         let html = '<div class="cphf-header-content">';
         
         // Left: Logo
@@ -643,8 +703,10 @@
         if (s.tagline)     html += `<p class="cphf-tag">${s.tagline}</p>`;
         html += '</div>';
         
-        // Right: Empty space for balance
-        html += '<div class="cphf-header-right"></div>';
+        // Right: Barcode
+        html += `<div class="cphf-barcode-wrap">
+          <div class="cphf-barcode">${barcodeSvg}</div>
+        </div>`;
         
         html += '</div>'; // end header-content
         
