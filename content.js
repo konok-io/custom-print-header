@@ -672,13 +672,6 @@
             width: 100%;
             height: 100%;
           }
-          #${HEADER_ID} .cphf-qr-text {
-            font-family: ${usedFont};
-            font-size: ${fs - 2}px;
-            color: ${s.textColor || "#64748b"};
-            margin-top: 2px;
-            direction: ltr !important;
-          }
           #${HEADER_ID} .cphf-name {
             font-family: ${usedFont};
             font-size: ${fs + 6}px;
@@ -812,7 +805,6 @@
         // Right: QR Code
         html += `<div class="cphf-qr-wrap">
           <div class="cphf-qr-code">${qrSvg}</div>
-          <div class="cphf-qr-text">${dateStr}<br>${timeStr}</div>
         </div>`;
         
         html += '</div>'; // end header-content
