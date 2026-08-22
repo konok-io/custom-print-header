@@ -837,8 +837,9 @@
         const right  = s.footerRight  || "";
         
         // তারিখ ও সময়
-        const dateTime = s.showDate ? new Date().toLocaleDateString("bn-BD", {
-          year: "numeric", month: "long", day: "numeric"
+        const dateTime = s.showDate ? new Date().toLocaleString("bn-BD", {
+          year: "numeric", month: "long", day: "numeric",
+          hour: "2-digit", minute: "2-digit"
         }) : "";
         
         // পেজ নম্বর ডান পাশে
