@@ -727,6 +727,7 @@
         ${!svgFooter ? `
           #${FOOTER_ID} .cphf-footer-left   { flex: 1; text-align: left; direction: ltr !important; }
           #${FOOTER_ID} .cphf-footer-center { flex: 1; text-align: center; direction: ltr !important; }
+          #${FOOTER_ID} .cphf-footer-date   { flex: 1; text-align: center; direction: ltr !important; }
           #${FOOTER_ID} .cphf-footer-right  { flex: 1; text-align: right; direction: ltr !important; }
           #${FOOTER_ID} .cphf-page-counter::before { content: counter(page); }
           #${FOOTER_ID} span { max-width: 100%; word-break: break-word; font-family: ${usedFont}; }
@@ -833,17 +834,20 @@
       } else {
         const left   = s.footerLeft   || "";
         const center = s.footerCenter || "";
-        let   right  = s.footerRight  || "";
-        if (s.showDate) {
-          const d = new Date().toLocaleDateString("bn-BD",
-            { year: "numeric", month: "long", day: "numeric" });
-          right = right ? `${right} | ${d}` : d;
-        }
+        const right  = s.footerRight  || "";
+        
+        // তারিখ ও সময়
+        const dateTime = s.showDate ? new Date().toLocaleDateString("bn-BD", {
+          year: "numeric", month: "long", day: "numeric"
+        }) : "";
+        
         // পেজ নম্বর ডান পাশে
         const pageNum = s.pageNumbers ? `<span class="cphf-page-num">পেজ&nbsp;<span class="cphf-page-counter"></span></span>` : "";
+        
         footer.innerHTML = `
           <span class="cphf-footer-left">${left}</span>
           <span class="cphf-footer-center">${center}</span>
+          <span class="cphf-footer-date">${dateTime}</span>
           <span class="cphf-footer-right">${right}${pageNum ? ' | ' + pageNum : ''}</span>
         `;
       }
