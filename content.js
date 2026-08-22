@@ -626,14 +626,15 @@
             align-items: center;
             font-family: ${usedFont};
             font-size: ${fs - 1}px;
+            gap: 10px;
           `}
         }
 
         ${!svgFooter ? `
-          #${FOOTER_ID} .cphf-footer-left   { flex: 1; text-align: left; direction: ltr !important; }
-          #${FOOTER_ID} .cphf-footer-center { flex: 1; text-align: center; direction: ltr !important; }
-          #${FOOTER_ID} .cphf-footer-date   { flex: 1; text-align: center; direction: ltr !important; }
-          #${FOOTER_ID} .cphf-footer-right  { flex: 1; text-align: right; direction: ltr !important; }
+          #${FOOTER_ID} .cphf-footer-left   { flex: 1; text-align: left; direction: ltr !important; min-width: 0; }
+          #${FOOTER_ID} .cphf-footer-center { flex: 1; text-align: center; direction: ltr !important; min-width: 0; }
+          #${FOOTER_ID} .cphf-footer-date   { flex: 0 0 auto; text-align: center; direction: ltr !important; white-space: nowrap; }
+          #${FOOTER_ID} .cphf-footer-right  { flex: 0 0 auto; text-align: right; direction: ltr !important; white-space: nowrap; }
           #${FOOTER_ID} .cphf-page-counter::before { content: counter(page); }
           #${FOOTER_ID} span { max-width: 100%; word-break: break-word; font-family: ${usedFont}; }
         ` : `#${FOOTER_ID} svg { width: 100%; height: auto; display: block; }`}
