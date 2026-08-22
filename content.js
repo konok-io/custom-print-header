@@ -698,18 +698,6 @@
             text-align: center !important;
           }
         }
-        
-        /* ইনলাইন স্টাইল ওভাররাইড করতে higher specificity */
-        @media print {
-          body #${HEADER_ID} {
-            display: block !important;
-            visibility: visible !important;
-          }
-          body #${FOOTER_ID} {
-            display: flex !important;
-            visibility: visible !important;
-          }
-        }
       }
     `;
     document.head.appendChild(style);
@@ -718,7 +706,6 @@
     if (hShow) {
       const header = document.createElement("div");
       header.id = HEADER_ID;
-      header.style.cssText = "display: none !important;";
 
       if (svgHeader) {
         header.innerHTML = s.headerSvg;
@@ -765,7 +752,6 @@
     if (fShow) {
       const footer = document.createElement("div");
       footer.id = FOOTER_ID;
-      footer.style.cssText = "display: none !important;";
 
       if (svgFooter) {
         footer.innerHTML = s.footerSvg;
