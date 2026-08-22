@@ -459,6 +459,18 @@
         }
       }
 
+      /* ──── মিনিমাল ফন্ট সাইজ (শুধু ব্রাউজারে) ──── */
+      ${s.minFontSize ? `
+        @media screen {
+          body, body * {
+            font-size: max(14px, inherit) !important;
+          }
+          p, span, div, li, td, th, a, label, input, textarea, button {
+            font-size: max(14px, inherit) !important;
+          }
+        }
+      ` : ""}
+
       /* ──── ১. শুধু নেভিগেশন/বিজ্ঞাপন লুকান ──── */
         ${s.contentOnly ? `
           /* শুধু বিজ্ঞাপন ও নোটিফিকেশন */

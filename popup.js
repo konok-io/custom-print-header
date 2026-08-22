@@ -38,6 +38,7 @@ const DEFAULTS = {
   watermarkText: "",
   watermarkColor: "#000000",
   watermarkOpacity: "0.1",
+  minFontSize: false,
   presetName: "default",
 };
 
@@ -295,6 +296,7 @@ function populateForm(s) {
   setChk("removeFixed", s.removeFixed);
   setChk("printBackground", s.printBackground);
   setChk("forceReload", s.forceReload);
+  setChk("minFontSize", s.minFontSize);
   setChk("pageNumbers", s.pageNumbers);
   setChk("watermarkEnabled", s.watermark !== "none");
   setMode("orientation", s.pageOrientation || "portrait");
@@ -369,6 +371,7 @@ function getSettings() {
     removeFixed:   chk("removeFixed"),
     printBackground: chk("printBackground"),
     forceReload:   chk("forceReload"),
+    minFontSize:    chk("minFontSize"),
     headerMode:    val("headerMode", "fields"),
     footerMode:    val("footerMode", "fields"),
     headerSvg:     savedHeaderSvg,
