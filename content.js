@@ -174,6 +174,58 @@
     svg.removeAttribute("height");
   }
 
+  /* ── QR কোড জেনারেট (Simple SVG) ── */
+  function generateQRCodeSVG(data) {
+    // Simple QR-like pattern using hash
+    const hash = simpleHash(data);
+    const size = 41; // QR modules
+    const moduleSize = 100 / size;
+    let pathD = "";
+    
+    // QR positioning patterns (corners)
+    const drawFinderPattern = (x, y) => {
+      pathD += `M${x},${y}h7v7h-7z M${x+1},${y+1}v5h5v-5z M${x+2},${y+2}v3h3v-3z `;
+    };
+    
+    drawFinderPattern(0, 0); // Top-left
+    drawFinderPattern(size - 7, 0); // Top-right
+    drawFinderPattern(0, size - 7); // Bottom-left
+    
+    // Generate pattern from hash
+    for (let i = 0; i < size * size; i++) {
+      const row = Math.floor(i / size);
+      const col = i % size;
+      
+      // Skip finder patterns area
+      if ((row < 8 && col < 8) || (row < 8 && col > size - 9) || (row > size - 9 && col < 8)) continue;
+      
+      // Generate module based on hash
+      const hashIndex = (hash + i) % hash.length;
+      if (hash[hashIndex % hash.length] % 3 === 0) {
+        const x = col * moduleSize;
+        const y = row * moduleSize;
+        pathD += `M${x},${y}h${moduleSize * 0.9}v${moduleSize * 0.9}h-${moduleSize * 0.9}z `;
+      }
+    }
+    
+    return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="100" fill="white"/>
+      <rect width="100" height="100" fill="black" clip-path="url(#qrClip)"/>
+      <clipPath id="qrClip"><path d="${pathD}"/></clipPath>
+      <rect width="100" height="100" fill="none" stroke="#000" stroke-width="2"/>
+      <path d="${pathD}" fill="#000"/>
+    </svg>`;
+  }
+
+  function simpleHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash = hash & hash;
+    }
+    return Math.abs(hash).toString();
+  }
+
   /* ── মূল ইনজেকশন ── */
   function injectElements(s) {
     removeElements();
@@ -510,6 +562,30 @@
             max-height: ${logoSize}px;
             object-fit: contain;
           }
+          /* QR কোড - লোগোর সমান সাইজ */
+          #${HEADER_ID} .cphf-qr-wrap {
+            flex-shrink: 0;
+            text-align: center;
+            direction: ltr !important;
+          }
+          #${HEADER_ID} .cphf-qr-code {
+            width: ${logoSize}px;
+            height: ${logoSize}px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          #${HEADER_ID} .cphf-qr-code svg {
+            width: 100%;
+            height: 100%;
+          }
+          #${HEADER_ID} .cphf-qr-text {
+            font-family: ${usedFont};
+            font-size: ${fs - 2}px;
+            color: ${s.textColor || "#64748b"};
+            margin-top: 2px;
+            direction: ltr !important;
+          }
           /* প্রতিষ্ঠানের তথ্য - সেন্টার */
           #${HEADER_ID} .cphf-company-info {
             text-align: center;
@@ -623,6 +699,15 @@
         header.innerHTML = s.headerSvg;
         normalizeSvg(header);
       } else {
+        // QR কোডের জন্য তারিখ ও সময়
+        const now = new Date();
+        const dateStr = now.toLocaleDateString("bn-BD", { year: "numeric", month: "long", day: "numeric" });
+        const timeStr = now.toLocaleTimeString("bn-BD", { hour: "2-digit", minute: "2-digit" });
+        const qrData = `${dateStr} | ${timeStr}`;
+        
+        // QR কোড জেনারেট - Base64 encoded QR
+        const qrSvg = generateQRCodeSVG(qrData);
+        
         let html = '<div class="cphf-header-content">';
         
         // Left: Logo
@@ -630,11 +715,17 @@
           html += `<div class="cphf-logo-wrap"><img class="cphf-logo" src="${s.logoData}" alt="logo"></div>`;
         }
         
-        // Right: Company info
+        // Center: Company info
         html += '<div class="cphf-company-info">';
         if (s.companyName) html += `<h1 class="cphf-name">${s.companyName}</h1>`;
         if (s.tagline)     html += `<p class="cphf-tag">${s.tagline}</p>`;
         html += '</div>';
+        
+        // Right: QR Code
+        html += `<div class="cphf-qr-wrap">
+          <div class="cphf-qr-code">${qrSvg}</div>
+          <div class="cphf-qr-text">${dateStr}<br>${timeStr}</div>
+        </div>`;
         
         html += '</div>'; // end header-content
         
