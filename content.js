@@ -698,6 +698,18 @@
             text-align: center !important;
           }
         }
+        
+        /* ইনলাইন স্টাইল ওভাররাইড করতে higher specificity */
+        @media print {
+          body #${HEADER_ID} {
+            display: block !important;
+            visibility: visible !important;
+          }
+          body #${FOOTER_ID} {
+            display: flex !important;
+            visibility: visible !important;
+          }
+        }
       }
     `;
     document.head.appendChild(style);
