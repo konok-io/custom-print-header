@@ -706,6 +706,7 @@
     if (hShow) {
       const header = document.createElement("div");
       header.id = HEADER_ID;
+      header.style.cssText = "display: none !important;";
 
       if (svgHeader) {
         header.innerHTML = s.headerSvg;
@@ -752,6 +753,7 @@
     if (fShow) {
       const footer = document.createElement("div");
       footer.id = FOOTER_ID;
+      footer.style.cssText = "display: none !important;";
 
       if (svgFooter) {
         footer.innerHTML = s.footerSvg;
