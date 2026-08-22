@@ -15,7 +15,7 @@ const DEFAULTS = {
   email: "info@example.com",
   website: "www.example.com",
   logoData: "",
-  logoSize: "58",
+  logoSize: "75",
   footerLeft: "যোগাযোগ: info@example.com",
   footerCenter: "ধন্যবাদ",
   footerRight: "স্বাক্ষর: ____________",
