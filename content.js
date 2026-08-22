@@ -671,7 +671,7 @@
             overflow: visible !important;
           }
           #${FOOTER_ID} {
-            display: ${fShow ? "block" : "none"} !important;
+            display: ${fShow ? "flex" : "none"} !important;
             position: fixed;
             bottom: 0; left: 0; right: 0;
             width: 100% !important;
@@ -681,10 +681,18 @@
             background: ${s.bgColor || "#fff"};
             box-sizing: border-box !important;
             direction: ltr !important;
-            text-align: left !important;
+            text-align: center !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 20px;
+            flex-wrap: wrap;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
             overflow: visible !important;
+            padding: 8px 15px;
+          }
+          #${FOOTER_ID} span {
+            text-align: center !important;
           }
         }
       }
