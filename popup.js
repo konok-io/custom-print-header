@@ -100,6 +100,14 @@ document.querySelectorAll(".tab").forEach(tab => {
   });
 });
 
+/* ── Sync enabled toggles (topbar & design tab) ── */
+$("enableToggle")?.addEventListener("change", function() {
+  if ($("enabled")) $("enabled").checked = this.checked;
+});
+$("enabled")?.addEventListener("change", function() {
+  if ($("enableToggle")) $("enableToggle").checked = this.checked;
+});
+
 /* ── Mode selector (ফিল্ড / SVG) ── */
 function setMode(target, mode) {
   // update hidden input
