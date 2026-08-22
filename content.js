@@ -636,13 +636,8 @@
           ${svgFooter ? "padding: 0;" : `
             color: ${s.textColor || "#64748b"};
             padding: 8px 15px;
-            display: flex !important;
-            justify-content: center;
-            align-items: center;
             font-family: ${usedFont};
             font-size: ${fs - 1}px;
-            gap: 20px;
-            flex-wrap: wrap;
           `}
         }
 
