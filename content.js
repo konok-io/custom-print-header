@@ -197,13 +197,18 @@
         src: url('${fontUrl}') format('truetype');
         font-weight: normal;
         font-style: normal;
-        font-display: swap;
+      }
+      #__cphf_hdr__, #__cphf_ftr__ {
+        font-family: 'StarNews' !important;
+      }
+      #__cphf_hdr__ *, #__cphf_ftr__ * {
+        font-family: 'StarNews' !important;
       }
     `;
     document.head.appendChild(fontStyle);
 
     /* ── ২. প্রিন্ট CSS ── */
-    const usedFont = "StarNews, 'SolaimanLipi', 'Bangla', 'Noto Sans Bengali', Arial, sans-serif";
+    const usedFont = "'StarNews', sans-serif";
     const isLandscape = s.pageOrientation === "landscape";
     const logoSize = parseInt(s.logoSize) || 58;
     const watermarkOpacity = parseFloat(s.watermarkOpacity) || 0.1;
@@ -262,6 +267,14 @@
           src: url('${fontUrl}') format('truetype');
           font-weight: normal;
           font-style: normal;
+        }
+        
+        /* হেডার ফুটারে বাংলা ফন্ট বাধ্যতামূলক */
+        #${HEADER_ID}, #${FOOTER_ID} {
+          font-family: 'StarNews', sans-serif !important;
+        }
+        #${HEADER_ID} *, #${FOOTER_ID} * {
+          font-family: 'StarNews', sans-serif !important;
         }
         
         /* CSS counter for page numbers - শুরু ১ থেকে */
