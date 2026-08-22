@@ -174,145 +174,6 @@
     svg.removeAttribute("height");
   }
 
-  /* ── QR কোড জেনারেট (সঠিক QR) ── */
-  function generateQRCodeSVG(data) {
-    // QR Code parameters for Version 2 (25x25 modules)
-    const VERSION = 2;
-    const SIZE = 21 + (VERSION - 1) * 4; // 21 for V1, 25 for V2
-    const MODULE_SIZE = 100 / SIZE;
-    
-    // Alphanumeric character set
-    const ALPHANUMERIC_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
-    
-    // Encoding data
-    let dataBits = [];
-    
-    // Mode indicator (0010 = alphanumeric)
-    dataBits.push(...[0,0,1,0]);
-    
-    // Character count (9 bits for V2)
-    const charCount = data.length;
-    for (let i = 8; i >= 0; i--) {
-      dataBits.push((charCount >> i) & 1);
-    }
-    
-    // Encode data
-    for (let i = 0; i < data.length; i++) {
-      const char = data[i].toUpperCase();
-      const idx = ALPHANUMERIC_CHARS.indexOf(char);
-      if (idx === -1) {
-        // Space or unknown - treat as 36
-        dataBits.push(...[1,0,0,1,0,0]);
-      } else {
-        const val = idx.toString(2).padStart(6, '0');
-        dataBits.push(...val.split('').map(Number));
-      }
-    }
-    
-    // Terminate
-    dataBits.push(0, 0, 0, 0);
-    
-    // Pad to 8 bits
-    while (dataBits.length % 8 !== 0) {
-      dataBits.push(0);
-    }
-    
-    // Pad bytes
-    const PAD_BYTES = [0xEC, 0x11];
-    let padIdx = 0;
-    while (dataBits.length < 272) { // Capacity for V2 alphanumeric
-      const pad = PAD_BYTES[padIdx % 2].toString(2).padStart(8, '0');
-      dataBits.push(...pad.split('').map(Number));
-      padIdx++;
-    }
-    
-    // Create data matrix
-    let matrix = [];
-    for (let r = 0; r < SIZE; r++) {
-      matrix[r] = [];
-      for (let c = 0; c < SIZE; c++) {
-        matrix[r][c] = null;
-      }
-    }
-    
-    // Add finder patterns
-    const addFinderPattern = (row, col) => {
-      for (let r = -1; r <= 7; r++) {
-        for (let c = -1; c <= 7; c++) {
-          const rr = row + r, cc = col + c;
-          if (rr < 0 || rr >= SIZE || cc < 0 || cc >= SIZE) continue;
-          if (r === -1 || r === 7 || c === -1 || c === 7) {
-            matrix[rr][cc] = 0;
-          } else if (r === 0 || r === 6 || c === 0 || c === 6) {
-            matrix[rr][cc] = 1;
-          } else if (r >= 2 && r <= 4 && c >= 2 && c <= 4) {
-            matrix[rr][cc] = 1;
-          } else {
-            matrix[rr][cc] = 0;
-          }
-        }
-      }
-    };
-    
-    addFinderPattern(0, 0);
-    addFinderPattern(0, SIZE - 7);
-    addFinderPattern(SIZE - 7, 0);
-    
-    // Add timing patterns
-    for (let i = 8; i < SIZE - 8; i++) {
-      matrix[6][i] = i % 2 === 0 ? 1 : 0;
-      matrix[i][6] = i % 2 === 0 ? 1 : 0;
-    }
-    
-    // Add format info area (simplified - using all 1s pattern)
-    // Top-left
-    for (let i = 0; i < 9; i++) {
-      if (i !== 6) matrix[8][i] = i % 2 === 0 ? 1 : 0;
-    }
-    for (let i = 0; i < 8; i++) {
-      if (i !== 6) matrix[i][8] = i % 2 === 0 ? 1 : 0;
-    }
-    
-    // Fill data modules (simplified zigzag pattern)
-    let bitIdx = 0;
-    for (let col = SIZE - 1; col >= 1; col -= 2) {
-      if (col === 6) col = 5;
-      for (let row = 0; row < SIZE; row++) {
-        for (let c = 0; c < 2; c++) {
-          const cc = col - c;
-          if (matrix[row][cc] === null) {
-            matrix[row][cc] = bitIdx < dataBits.length ? dataBits[bitIdx++] : 0;
-          }
-        }
-      }
-      for (let row = SIZE - 1; row >= 0; row--) {
-        for (let c = 0; c < 2; c++) {
-          const cc = col - c;
-          if (matrix[row][cc] === null) {
-            matrix[row][cc] = bitIdx < dataBits.length ? dataBits[bitIdx++] : 0;
-          }
-        }
-      }
-    }
-    
-    // Generate SVG
-    let rects = '';
-    for (let r = 0; r < SIZE; r++) {
-      for (let c = 0; c < SIZE; c++) {
-        if (matrix[r][c] === 1) {
-          const x = c * MODULE_SIZE;
-          const y = r * MODULE_SIZE;
-          rects += `<rect x="${x}" y="${y}" width="${MODULE_SIZE}" height="${MODULE_SIZE}"/>`;
-        }
-      }
-    }
-    
-    return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100" height="100" fill="white"/>
-      ${rects}
-    </svg>`;
-  }
-
   /* ── মূল ইনজেকশন ── */
   function injectElements(s) {
     removeElements();
@@ -654,23 +515,11 @@
             text-align: center;
             order: 2;
           }
-          /* QR কোড - ডান পাশে */
-          #${HEADER_ID} .cphf-qr-wrap {
+          /* ডান পাশে ফাঁকা জায়গা */
+          #${HEADER_ID} .cphf-header-right {
             flex-shrink: 0;
-            order: 3;
-            text-align: center;
-            direction: ltr !important;
-          }
-          #${HEADER_ID} .cphf-qr-code {
             width: ${logoSize}px;
-            height: ${logoSize}px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-          #${HEADER_ID} .cphf-qr-code svg {
-            width: 100%;
-            height: 100%;
+            order: 3;
           }
           #${HEADER_ID} .cphf-name {
             font-family: ${usedFont};
@@ -781,15 +630,6 @@
         header.innerHTML = s.headerSvg;
         normalizeSvg(header);
       } else {
-        // QR কোডের জন্য তারিখ ও সময়
-        const now = new Date();
-        const dateStr = now.toLocaleDateString("bn-BD", { year: "numeric", month: "long", day: "numeric" });
-        const timeStr = now.toLocaleTimeString("bn-BD", { hour: "2-digit", minute: "2-digit" });
-        const qrData = `${dateStr} | ${timeStr}`;
-        
-        // QR কোড জেনারেট - Base64 encoded QR
-        const qrSvg = generateQRCodeSVG(qrData);
-        
         let html = '<div class="cphf-header-content">';
         
         // Left: Logo
@@ -803,10 +643,8 @@
         if (s.tagline)     html += `<p class="cphf-tag">${s.tagline}</p>`;
         html += '</div>';
         
-        // Right: QR Code
-        html += `<div class="cphf-qr-wrap">
-          <div class="cphf-qr-code">${qrSvg}</div>
-        </div>`;
+        // Right: Empty space for balance
+        html += '<div class="cphf-header-right"></div>';
         
         html += '</div>'; // end header-content
         
